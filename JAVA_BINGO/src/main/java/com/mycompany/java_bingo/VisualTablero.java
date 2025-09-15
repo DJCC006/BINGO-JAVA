@@ -8,6 +8,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -78,6 +80,18 @@ public class VisualTablero {
         //Boton de salida de partida
         JButton salirBtt= new JButton("Salir de Partida");
         salirBtt.setBounds(25, 670, 195, 74);
+        salirBtt.addActionListener(new ActionListener(){
+          @Override 
+          public void actionPerformed(ActionEvent e){
+              MenuPrincipal menu  = new MenuPrincipal();
+              screen.dispose();
+          }
+                    
+        });
+        screen.add(salirBtt);
+        
+        
+        
         screen.add(salirBtt);
         
         

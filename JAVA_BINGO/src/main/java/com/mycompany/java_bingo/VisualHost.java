@@ -7,6 +7,8 @@ package com.mycompany.java_bingo;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -187,6 +189,17 @@ public class VisualHost {
         //Boton de terminar partida
         JButton terminarPartida = new JButton("Finalizar Partida");
         terminarPartida.setBounds(1050, 550, 225, 74);
+           terminarPartida.addActionListener(new ActionListener(){
+          @Override 
+          public void actionPerformed(ActionEvent e){
+              MenuPrincipal menu = new MenuPrincipal();
+              screen.dispose();
+          }
+                    
+        });
+        
+        
+        
         screen.add(terminarPartida);
         
         
