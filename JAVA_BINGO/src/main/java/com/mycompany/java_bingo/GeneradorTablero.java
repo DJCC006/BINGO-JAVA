@@ -13,8 +13,6 @@ public class GeneradorTablero {
     Random spawner = new Random();
     
     
-    
-    
     public GeneradorTablero(){
         for(int columna =0; columna<Tablero.length; columna++){
             
