@@ -105,13 +105,14 @@ public class VisualTablero {
         GLetter.setFont(new Font("Serif", Font.BOLD, 50));
         GLetter.setBounds(785, 170, 200, 100);
         screen.add(GLetter);
-        screen.add(GLetter);
+        
         
         JLabel OLetter = new JLabel("O ");
         OLetter.setFont(new Font("Serif", Font.BOLD, 50));
         OLetter.setBounds(870, 170, 200, 100);
         screen.add(OLetter);
         
+
         
         
         
