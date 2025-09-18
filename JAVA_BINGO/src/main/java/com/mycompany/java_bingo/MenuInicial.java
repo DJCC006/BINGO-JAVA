@@ -14,7 +14,7 @@ import javax.swing.JLabel;
 /**
  *
  * @author David
- */
+ */ 
 public class MenuInicial {
     //681, 432
     

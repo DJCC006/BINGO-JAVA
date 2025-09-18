@@ -14,14 +14,31 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-
+import java.util.Random;
 /**
  *
  * @author David
  */
 public class VisualHost {
     
-    public VisualHost(){
+    Random spawner = new Random();
+    int ballNum;
+    JLabel numGenerado = new JLabel();
+    int[] registeredNums= new int[75];
+    //Creacion de tablero general
+    JPanel panelNumeros = new JPanel(new GridLayout(15,5));
+    private int count=0;
+    private JButton[][] numerosBotones = new JButton[15][5];//referencia de todos los botones
+    private static String gameMode;//variable que lleva control del modo de juego
+    private String[] userArray;//Array list con los nombres de los usuarios
+    private static int cantPlayers;//para que me deje crear la ventana xd
+    
+    
+    
+    public VisualHost(String gameMode, int cantPlayers){
+        this.gameMode=gameMode;
+        this.cantPlayers=cantPlayers;
+        userArray = new String[cantPlayers];
         
         //Creacion de JFrame
         JFrame screen = new JFrame();
@@ -32,8 +49,7 @@ public class VisualHost {
         screen.setLayout(null);
         
         
-        //Creacion de tablero general
-        JPanel panelNumeros = new JPanel(new GridLayout(15,5));
+        
         //Generacion de numeros
         int[][] numerosTablero = new int[15][5];
         
@@ -87,11 +103,11 @@ public class VisualHost {
         for(int i=0; i<15; i++){
             for(int j=0; j<5; j++){
                 int num=numerosTablero[i][j];
-                JButton botonNum = new JButton(""+num);
-                botonNum.setEnabled(false);
-                botonNum.setOpaque(true);
-                botonNum.setBackground(Color.white);
-                panelNumeros.add(botonNum);
+                numerosBotones[i][j] = new JButton(String.valueOf(num));
+                numerosBotones[i][j].setEnabled(false);
+                numerosBotones[i][j].setOpaque(true);
+                numerosBotones[i][j].setBackground(Color.white);
+                panelNumeros.add(numerosBotones[i][j]);
             }
         }
         screen.add(panelNumeros);
@@ -136,10 +152,11 @@ public class VisualHost {
         
         
         //Label con numero generado
-        JLabel numGenerado = new JLabel("NUM HERE");
+        
+        
         numGenerado.setFont(new Font("Serif",Font.BOLD, 30));
         gNumPanel.add(numGenerado);
-        numGenerado.setBounds(45, 50, 200, 50);
+        numGenerado.setBounds(110, 50, 200, 50);
         
         JLabel tituloGenerado = new JLabel("NUEVO NUMERO:");
         tituloGenerado.setFont(new Font("Serif", Font.ITALIC, 15));
@@ -151,6 +168,22 @@ public class VisualHost {
         //Boton para generar nuevo numero
         JButton generateNum = new JButton("RAND NUM");
         generateNum.setBounds(190, 200, 150, 150);
+        generateNum.addActionListener(new ActionListener(){
+          @Override 
+          public void actionPerformed(ActionEvent e){
+              generaryMostrar();
+              String numer= String.valueOf(ballNum);
+              iluminarTablero(numer);
+              imprimirNums();
+              
+              
+              System.out.println("Cantidad de jugadores: "+cantPlayers);
+          }
+                    
+        });
+        
+        
+        
         screen.add(generateNum);
         
         
@@ -169,7 +202,7 @@ public class VisualHost {
         JLabel showGameMode = new JLabel("MODO DE JUEGO");
         showGameMode.setFont(new Font("Serif", Font.BOLD, 30));
         showGameMode.setBounds(1050, 50, 300, 50);
-        JLabel gameModetxt = new JLabel("MODE HERE");
+        JLabel gameModetxt = new JLabel(gameMode);
         gameModetxt.setFont(new Font("Serif", Font.ITALIC, 20));
         gameModetxt.setBounds(1050, 80, 300, 50);
         screen.add(gameModetxt);
@@ -210,9 +243,88 @@ public class VisualHost {
         
 
     public static void main(String[] args) {
-        VisualHost ventana = new VisualHost();
+        VisualHost ventana = new VisualHost(gameMode, cantPlayers);
+        
     }
     
+    
+    //Metodo que actualiza el numero generado
+    public void generaryMostrar(){
+        
+            //Confirmacdor de conteo
+            if(count>=75){
+                System.out.println("Todos los numeros han sido generados. Se ha terminado el juego");
+                return;
+            }
+            
+            //Verificacion de que el numero random no se haya repetido ya
+            boolean repetido;
+            int randNum;
+            do{
+                randNum =spawner.nextInt((75-1)+1)+1;
+                repetido=false;
+                
+                //Revision si ya existe en el array
+                for(int i=0; i<count; i++){
+                    if(registeredNums[i]==randNum){
+                       repetido=true;
+                        break; 
+                    }
+                }
+            }while(repetido);
+            
+            
+            //Clasificacion de columna
+            String numLabelwColum="";
+            String numLabel= String.valueOf(randNum);
+            
+            if(randNum>=1 && randNum<=15){
+                numLabelwColum="B"+numLabel;
+            }else if(randNum>=16 && randNum<=30){
+                numLabelwColum="I"+numLabel;
+            }else if(randNum>=31 && randNum<=45){
+                numLabelwColum="N"+numLabel;
+            }else if(randNum>=46 && randNum<=60){
+                numLabelwColum="G"+numLabel;
+            }else if(randNum>=61 && randNum<=75){
+                numLabelwColum="O"+numLabel;
+            }
+            
+            
+            
+            //Agregado al array
+            ballNum=randNum;
+            registeredNums[count]=randNum;
+            numGenerado.setText(numLabelwColum);
+            //GameSingleton.getInstancia().getGameSettings().setNumCantado(randNum);
+            count++;
+    }
+    
+    
+    
+    public void imprimirNums(){//Metodo solo de testeo, no brinda funcionalidad
+        for(int i=0; i<registeredNums.length; i++){
+            if(registeredNums[i]!=0){
+                System.out.println(registeredNums[i]);
+            }
+            
+        }
+    }
+    
+    public void iluminarTablero(String num){
+        for(int i=0; i<15; i++){
+            for(int j=0; j<5; j++){
+                if(num.equals(numerosBotones[i][j].getText())){
+                    numerosBotones[i][j].setBackground(Color.YELLOW);
+                }
+            }
+        }
+    }
+    
+    
+    
+    
+            
     
     
 }

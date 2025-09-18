@@ -156,5 +156,9 @@ public class GeneradorTablero {
         }
     }
     
+    public int[][] obtenerTablero(){
+        return Tablero;
+    }
+    
     
 }

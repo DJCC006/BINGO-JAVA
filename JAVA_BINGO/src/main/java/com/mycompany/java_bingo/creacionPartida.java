@@ -8,8 +8,10 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 /**
@@ -33,13 +35,28 @@ public class creacionPartida {
         screen.add(tituloGeneral);
         
         //Obtencion de info
-        JLabel playerstxt= new JLabel("Ingrese la cantidad de jugadores: ");
-        playerstxt.setFont(new Font("Serif", Font.ITALIC, 20));
-        playerstxt.setBounds(200, 120, 300, 50);
+        JLabel playerstxt= new JLabel("Cantidad de jugadores (Max 15): ");
+        playerstxt.setFont(new Font("Serif", Font.ITALIC, 10));
+        playerstxt.setBounds(150, 120, 300, 50);
         JTextField ingresoPlayers = new JTextField();
-        ingresoPlayers.setBounds(191, 180, 300, 30);
+        ingresoPlayers.setBounds(150, 180, 150, 30);
         screen.add(ingresoPlayers);
         screen.add(playerstxt);
+        
+        
+        
+        
+        
+        
+        JLabel modetxt = new JLabel("Modo de Juego:");
+        modetxt.setFont(new Font("Serif", Font.ITALIC, 15));
+        modetxt.setBounds(380, 130, 150, 30);
+        screen.add(modetxt);
+                
+        String[] modosJuego = {"FullHouse", "Lineal"};
+        JComboBox<String> selecMode = new JComboBox<>(modosJuego);
+        selecMode.setBounds(380, 180, 160, 30);
+        screen.add(selecMode);
         
         
         //Creacion de botones
@@ -47,11 +64,31 @@ public class creacionPartida {
         crearBtt.setBounds(150, 250, 150, 50);
         crearBtt.addActionListener(new ActionListener(){
           @Override 
-          public void actionPerformed(ActionEvent e){
-              VisualHost pantallaHost = new VisualHost();
-              screen.dispose();
-          }
-                    
+        public void actionPerformed(ActionEvent e){
+              String modojuego= (String) selecMode.getSelectedItem();
+              System.out.println(modojuego);
+              String catchertxt=ingresoPlayers.getText();
+              int numPlayers;
+              if(catchertxt.equals("")){
+                    numPlayers=0;
+              }else{
+                    numPlayers= Integer.parseInt(catchertxt);
+              }
+              System.out.println(numPlayers);
+              
+              if(numPlayers>15){
+                  JOptionPane.showMessageDialog(screen, "AVISO: Maximo de Jugadores Superado");
+              }else{
+                  
+                  //Crea los settings del juego para usarlo entre distintas ventanas
+                  GameHandler settings = new GameHandler();
+                  settings.setGameMode(modojuego);
+                  GameSingleton.getInstancia().setGameSetting(settings);
+                  
+                   VisualHost pantallaHost = new VisualHost(modojuego, numPlayers);
+                   screen.dispose();
+              }
+            }     
         });
         screen.add(crearBtt);
         
