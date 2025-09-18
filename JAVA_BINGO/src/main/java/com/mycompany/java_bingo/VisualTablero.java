@@ -10,6 +10,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -22,7 +23,14 @@ import java.util.Random;
  */
 public class VisualTablero {
     
-    int randNum;
+    private int randNum;
+    private Random spawner = new Random();
+    private JButton showCantado = new JButton();//Boton que muestra numero que se acaba de cantar
+    private JPanel panelCantados = new JPanel(new GridLayout(1,5));//Mini historial de numeros
+    private int MaxHistorial =5;
+    private JButton[] historialBotones = new JButton[5];
+    private ArrayList<Integer> numerosCantados= new ArrayList();//Historial de numeros ya cantados para mostrar el mini hostiral
+    
     public VisualTablero(){
         
         //Creacion de JFrame
@@ -32,7 +40,7 @@ public class VisualTablero {
         screen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         screen.setLocationRelativeTo(null);
         screen.setLayout(null);
-        Random spawner = new Random();
+        
         
         
         //Creacion de JPanel de juego
@@ -69,9 +77,10 @@ public class VisualTablero {
         
         
         //Creacion de numeros ya cantados
-        JPanel panelCantados = new JPanel(new GridLayout(1,5));
         for(int j=0; j<5;j++){
-            panelCantados.add(new JButton("Cantado"+j));
+            historialBotones[j]= new JButton("");
+            historialBotones[j].setEnabled(false);
+            panelCantados.add(historialBotones[j]);
         }
         panelCantados.setBounds(580, 0, 425, 100);
         screen.add(panelCantados);
@@ -79,7 +88,7 @@ public class VisualTablero {
         
         //Numero cantado actualmente
         //String.valueOf(GameSingleton.getInstancia().getGameSettings().getNumCantado())
-        JButton showCantado = new JButton();
+        
         showCantado.setBounds(450, 0, 100, 100);
         screen.add(showCantado);
         
@@ -112,8 +121,7 @@ public class VisualTablero {
         randBtt.addActionListener(new ActionListener(){
           @Override 
           public void actionPerformed(ActionEvent e){
-              randNum =spawner.nextInt((75-1)+1)+1;
-              showCantado.setText(String.valueOf(randNum));
+              genAndShow();
           }
                     
         });
@@ -171,6 +179,35 @@ public class VisualTablero {
     
     public static void main(String[] args) {
         VisualTablero ventana = new VisualTablero();
+    }
+    
+    
+    public void genAndShow(){
+        randNum =spawner.nextInt((75-1)+1)+1;
+        showCantado.setText(String.valueOf(randNum));
+        
+        
+        //Agregacion al historial
+        numerosCantados.add(0,randNum);
+        if(numerosCantados.size()>MaxHistorial){
+            numerosCantados.remove(numerosCantados.size()-1);
+        }
+        
+        actualizarHistorial();
+        
+        //Nota: a la hora de hacer esto con el server host, se debe recibir tanto el num en forma int como el String. el int se guardara tal y como esta la forma local
+        //Lo que se puede hacer es crear otro arraylist en forma string que sirva la misma logica y trabaje paralelamente con el nums. A manera que, dependiendo el indice del array int, se establece el string
+        
+    }
+    
+    private void actualizarHistorial(){
+        for(int i=0; i< historialBotones.length; i++){
+            if(i<numerosCantados.size()){
+                historialBotones[i].setText(String.valueOf(numerosCantados.get(i)));
+            }else{
+                historialBotones[i].setText("");
+            }
+        }
     }
     
     
