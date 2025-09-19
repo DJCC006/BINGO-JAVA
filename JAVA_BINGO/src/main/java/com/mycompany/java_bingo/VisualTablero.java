@@ -11,11 +11,13 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.util.Random;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -30,8 +32,31 @@ public class VisualTablero {
     private int MaxHistorial =5;
     private JButton[] historialBotones = new JButton[5];
     private ArrayList<Integer> numerosCantados= new ArrayList();//Historial de numeros ya cantados para mostrar el mini hostiral
+    private int[] cantadosYa = new int[75];
+    private JButton[][] botonesTablero = new JButton[5][5];//Array de botones de tablero
+    
+    int count=0;
+    
+    
+    //Cosas para funcionalidad de modalidad de juego
+    private boolean[][] tableroObj = new boolean[5][5];
+    private boolean[][] tableroGamePlay;
+    
+    
+    
     
     public VisualTablero(){
+   
+        //generateObjArray();//Generar el tablero objetivo
+        tableroObj[0][0]=true;
+        tableroObj[1][1]=true;
+        tableroObj[3][3]=true;
+        tableroObj[4][4]=true;
+        tableroObj[0][4]=true;
+        tableroObj[1][3]=true;
+        tableroObj[3][1]=true;
+        tableroObj[4][0]=true;
+        tableroObj[2][2]=true;
         
         //Creacion de JFrame
         JFrame screen = new JFrame();
@@ -42,9 +67,14 @@ public class VisualTablero {
         screen.setLayout(null);
         
         
+        //Creacion de manejador de tablero para gamePlay
+        tableroGamePlay= new boolean[5][5];
+        tableroGamePlay[2][2] = true; //El cuadrado del centro se manejara siempre como true;
+        
+        
+        
         
         //Creacion de JPanel de juego
-        
         int[][] Tablero = new int[5][5];
         GeneradorTablero tableroSpawner = new GeneradorTablero();
         Tablero = tableroSpawner.obtenerTablero();
@@ -54,8 +84,34 @@ public class VisualTablero {
         JPanel panel = new JPanel(new GridLayout(5,5));
         for(int i=0; i<5; i++){
             for(int j=0; j<5; j++){
+                
+                botonesTablero[i][j] = new JButton();
                 String numtxt = String.valueOf(Tablero[i][j]);
-                panel.add(new JButton(numtxt));
+                botonesTablero[i][j].setText(numtxt);
+                int fila=i;
+                int columna=j;
+                
+                if(fila==2 && columna==2){
+                    botonesTablero[i][j].setEnabled(false);
+                }
+                
+                botonesTablero[i][j].addActionListener(new ActionListener(){
+                    @Override 
+                    public void actionPerformed(ActionEvent e){
+                        if(tableroGamePlay[fila][columna]==false){
+                            tableroGamePlay[fila][columna]=true;
+                            botonesTablero[fila][columna].setBackground(Color.YELLOW);
+                        }else if(tableroGamePlay[fila][columna]==true){
+                            tableroGamePlay[fila][columna]=false;
+                            botonesTablero[fila][columna].setBackground(Color.gray);
+                        }
+                    }
+
+                  });
+                
+                
+                
+                panel.add(botonesTablero[i][j]);
             }
             
         }
@@ -101,6 +157,16 @@ public class VisualTablero {
         screen.add(juegoModetxt);
         screen.add(indicadorModo);
         
+        //boton de BINGO
+        JButton bingoBtt= new JButton("BINGO");
+        bingoBtt.setBounds(25, 470, 195, 74);
+        bingoBtt.addActionListener(new ActionListener(){
+          @Override 
+          public void actionPerformed(ActionEvent e){
+            comprobadorBingo(screen);
+          }
+        });
+        screen.add(bingoBtt);
         
         //Boton de salida de partida
         JButton salirBtt= new JButton("Salir de Partida");
@@ -182,22 +248,51 @@ public class VisualTablero {
     }
     
     
+    
+    //Testing only
     public void genAndShow(){
-        randNum =spawner.nextInt((75-1)+1)+1;
+        boolean repetido;
+        int randNum;
+        do{
+                randNum =spawner.nextInt((75-1)+1)+1;
+                repetido=false;
+                
+            //Revision si ya existe en el array
+            for(int i=0; i<count; i++){
+                if(cantadosYa[i]==randNum){
+                    repetido=true;
+                    break; 
+                }
+            }
+        }while(repetido);
         showCantado.setText(String.valueOf(randNum));
         
         
         //Agregacion al historial
         numerosCantados.add(0,randNum);
+        cantadosYa[count]=randNum;
         if(numerosCantados.size()>MaxHistorial){
             numerosCantados.remove(numerosCantados.size()-1);
         }
+        
+        count++;
         
         actualizarHistorial();
         
         //Nota: a la hora de hacer esto con el server host, se debe recibir tanto el num en forma int como el String. el int se guardara tal y como esta la forma local
         //Lo que se puede hacer es crear otro arraylist en forma string que sirva la misma logica y trabaje paralelamente con el nums. A manera que, dependiendo el indice del array int, se establece el string
         
+    }
+    
+    
+    
+    //Testing only - genera un simulacro del concepto logico que mandaria el host
+    private void generateObjArray(){
+        for(int i=0; i<tableroObj.length; i++){
+            for(int j=0; j<tableroObj.length; j++){
+                tableroObj[i][j]=true;
+            }
+        }
     }
     
     private void actualizarHistorial(){
@@ -209,6 +304,82 @@ public class VisualTablero {
             }
         }
     }
+    
+    
+    
+    private void comprobadorBingo(JFrame screen){
+        //Condiciones para considerarse win:
+        //Que coincidan con el tablero designao X
+        //Que los numeros ya se hayan cantado
+     
+        boolean[][] arrayComprobador = new boolean [5][5];
+        arrayComprobador[2][2]=true;//Casilla de centro siempre true
+        
+        for(int fila=0; fila<5; fila++){
+            for(int columna=0; columna<5; columna++){
+                //Obtiene el numero del boton actual
+                int numButton = Integer.valueOf(botonesTablero[fila][columna].getText());
+                
+                
+                //Verifica que este en la posicion del tablero objetivo
+                boolean comp1=tableroObj[fila][columna]; 
+
+                //Verifica que el numero de la casilla ya se haya cantado
+                boolean comp2 =searchNum(numButton); //Verifica que el numero ya se haya cantado
+                
+            
+                if(comp1==true && comp2==true){
+                    arrayComprobador[fila][columna]=true;
+                }
+                
+            }
+        }
+        
+        
+        
+        boolean win = Arrays.deepEquals(arrayComprobador,tableroObj);
+        if(win==true){
+            JOptionPane.showMessageDialog(screen, "HAS GANADO EL BINGO");
+        }else{
+            JOptionPane.showConfirmDialog(screen, "AUN NO PAPU");
+        }
+        
+        
+        //Print de array usuario
+        for(int i=0; i<5; i++){
+            for(int j=0; j<5; j++){
+                System.out.print(" "+arrayComprobador[i][j]+" ");
+            }
+            System.out.println("");
+        }
+        
+        //Print de array asignado
+        System.out.println("");
+        for(int i=0; i<tableroObj.length; i++){
+            for(int j=0; j<tableroObj.length; j++){
+                System.out.print(" "+tableroObj[i][j]+" ");
+            }
+            System.out.println("");
+        }
+        
+        
+    }
+    
+    
+    public boolean searchNum(int num){
+        
+        for(int i=0; i<cantadosYa.length; i++){
+            if(num == cantadosYa[i]){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    
+    
+    
+    
     
     
     
