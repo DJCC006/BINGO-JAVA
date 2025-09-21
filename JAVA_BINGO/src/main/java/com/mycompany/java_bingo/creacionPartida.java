@@ -65,10 +65,11 @@ public class creacionPartida {
         crearBtt.addActionListener(new ActionListener(){
           @Override 
         public void actionPerformed(ActionEvent e){
-              String modojuego= (String) selecMode.getSelectedItem();
+            
+              String modojuego= (String) selecMode.getSelectedItem();//variable de modo de juego
               System.out.println(modojuego);
-              String catchertxt=ingresoPlayers.getText();
-              int numPlayers;
+              String catchertxt=ingresoPlayers.getText(); 
+              int numPlayers;//cantidad de jugadores
               if(catchertxt.equals("")){
                     numPlayers=0;
               }else{
@@ -85,7 +86,19 @@ public class creacionPartida {
                   settings.setGameMode(modojuego);
                   GameSingleton.getInstancia().setGameSetting(settings);
                   
-                   VisualHost pantallaHost = new VisualHost(modojuego, numPlayers);
+                   
+                   
+                    //Creacion de server
+                    Servidor server = new Servidor();
+                    server.startServer();;
+                    
+                    //Creacion de host as a player
+                    Cliente host = new Cliente("HOST", "localhost", 7775);
+                    host.start();
+                    
+                    VisualHost pantallaHost = new VisualHost(modojuego, numPlayers, host);
+                    
+                    
                    screen.dispose();
               }
             }     
@@ -107,8 +120,6 @@ public class creacionPartida {
         
         
         screen.add(regresarBtt);
-        
-        
         screen.setVisible(true);
         
     }

@@ -27,18 +27,19 @@ public class VisualTablero {
     
     
     //Variables generales para funcionamiento de programa
-    
+    private static ClientePlayer player;
     
     //Variables de recibimiento
     private int randNum;//Variable que almacena numero random 
     private int numCantTxt;//mismo num random pero con letra de donde pertenece
     private String gameModeLabel; //Variable que recibe el txt del modo de juego
-    
+    private String mensajeServer;
+    JLabel juegoModetxt;
     
     
     //Variables senders
     private boolean win=false;
-    
+    private static String username;
    
     //Elementos para mini historial
     private JButton showCantado = new JButton();//Boton que muestra numero que se acaba de cantar
@@ -46,6 +47,7 @@ public class VisualTablero {
     private ArrayList<Integer> numerosCantados= new ArrayList();//Historial de numeros ya cantados para mostrar el mini hostiral
     private int MaxHistorial =5;
     private JButton[] historialBotones = new JButton[5];//botones como tal
+    private int ultimoCantado=  0;
     int count=0;
     
     
@@ -65,8 +67,19 @@ public class VisualTablero {
     
     
     
-    public VisualTablero(){
-   
+    public VisualTablero(String username){
+        ;
+        this.username=username;
+        System.out.println(username);
+        
+        
+        //creacion de player pa el server
+        ClientePlayer player = new ClientePlayer(this.username, "localhost", 7775, this);
+        player.start();
+        this.player=player;
+        
+        
+        
         //Generar el tablero objetivo
         tableroObj[0][0]=true;
         tableroObj[1][1]=true;
@@ -170,7 +183,7 @@ public class VisualTablero {
         JLabel indicadorModo = new JLabel("MODO DE JUEGO");
         indicadorModo.setBounds(350, 235, 225, 90);
         //GameSingleton.getInstancia().getGameSettings().getGameMode()
-        JLabel juegoModetxt = new JLabel("MODO HERE");
+        juegoModetxt = new JLabel("MODO HERE");
         juegoModetxt.setBounds(350, 280, 225, 90);
         screen.add(juegoModetxt);
         screen.add(indicadorModo);
@@ -246,7 +259,7 @@ public class VisualTablero {
     
     
     public static void main(String[] args) {
-        VisualTablero ventana = new VisualTablero();
+        VisualTablero ventana = new VisualTablero(username);
     }
     
     
@@ -298,9 +311,15 @@ public class VisualTablero {
     }
     
     private void actualizarHistorial(){
+        
         for(int i=0; i< historialBotones.length; i++){
             if(i<numerosCantados.size()){
-                historialBotones[i].setText(String.valueOf(numerosCantados.get(i)));
+                if(i==randNum){
+                    //nada xd
+                }else{
+                    historialBotones[i].setText(tranformadorNums(numerosCantados.get(i)));
+                }
+                
             }else{
                 historialBotones[i].setText("");
             }
@@ -378,9 +397,86 @@ public class VisualTablero {
     }
     
     
+    public void setCantado(String cantado){
+        showCantado.setText(cantado);
+    }
+    
+    
+    public void setMensaje(String mensaje){
+        mensajeServer=mensaje;
+        depurarMensaje(mensajeServer);
+    }
+    
+    
+    public void depurarMensaje(String mensaje){
+        try{
+          
+                String[] parts = mensaje.split(":",2);
+                String messageContent = parts.length>1 ? parts[1] : "";
+                int num=0;
+                boolean compInt=false;
+                try{
+                    num = Integer.parseInt(messageContent);
+                    compInt=true;
+                }catch(NumberFormatException e){
+                    compInt=false;
+                }
+
+
+                if(compInt==true){
+                    randNum=num;
+                    cantadosYa[count]=randNum;
+                    actualizarNums(randNum);
+                }else if(compInt!=true){
+                    gameModeLabel=messageContent;
+                    //juegoModetxt.setText(gameModeLabel);
+                }  
+         
+        }catch(NullPointerException e){
+            System.out.println("Error XD");
+        }
+    }
     
     
     
+    //Metodo que organiza todo el proceso para mostrar numeros en el historial
+    private void actualizarNums(int randNum){
+        //Actualizacion de controlador de ultimo numero cantado
+        if(ultimoCantado!=0){
+            numerosCantados.add(0,ultimoCantado);
+            
+            if(numerosCantados.size()>MaxHistorial){
+                numerosCantados.remove(numerosCantados.size()-1);
+            }
+        }
+        
+        String showNum=tranformadorNums(randNum);//transforma numero
+        setCantado(showNum);//muestra numero
+        
+        ultimoCantado=randNum;//Actualiza ultimo numero
+        actualizarHistorial();
+    }
+    
+    
+    
+    //Metodo que le pone la letra la num dependiendo del rango
+    private String tranformadorNums(int randNum){
+        String numLabel= String.valueOf(randNum);
+        String numLabelwColum="";
+            
+        if(randNum>=1 && randNum<=15){
+            numLabelwColum="B"+numLabel;
+        }else if(randNum>=16 && randNum<=30){
+            numLabelwColum="I"+numLabel;
+        }else if(randNum>=31 && randNum<=45){
+            numLabelwColum="N"+numLabel;
+        }else if(randNum>=46 && randNum<=60){
+            numLabelwColum="G"+numLabel;
+        }else if(randNum>=61 && randNum<=75){
+            numLabelwColum="O"+numLabel;
+        }
+        return numLabelwColum;
+    }
     
     
     

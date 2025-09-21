@@ -48,7 +48,15 @@ public class UnirsePartida {
         crearBtt.addActionListener(new ActionListener(){
           @Override 
           public void actionPerformed(ActionEvent e){
-              VisualTablero pantallaUser = new VisualTablero();
+              String username =ingresoPlayers.getText();
+              
+              
+              
+              
+              
+              VisualTablero pantallaUser = new VisualTablero(username);
+              
+           
               screen.dispose();
           }
                     

@@ -22,6 +22,9 @@ import java.util.Random;
 public class VisualHost {
     
     Random spawner = new Random();
+    private static Cliente host;
+    
+    
     
     //Variables senders
     int ballNum;
@@ -45,10 +48,16 @@ public class VisualHost {
     
     
     
-    public VisualHost(String gameMode, int cantPlayers){
+    public VisualHost(String gameMode, int cantPlayers, Cliente host){
         this.gameMode=gameMode;
         this.cantPlayers=cantPlayers;
+        this.host=host;
         userArray = new String[cantPlayers];
+        
+        
+        
+        
+        
         
         //Creacion de JFrame
         JFrame screen = new JFrame();
@@ -237,11 +246,17 @@ public class VisualHost {
         screen.add(terminarPartida);
         screen.setVisible(true);
         
+        
+        
+        
+        
+        
+        
     }
         
 
     public static void main(String[] args) {
-        VisualHost ventana = new VisualHost(gameMode, cantPlayers);
+        VisualHost ventana = new VisualHost(gameMode, cantPlayers, host);
         
     }
     
@@ -295,6 +310,7 @@ public class VisualHost {
             registeredNums[count]=randNum;
             numGenerado.setText(numLabelwColum);
             count++;
+            host.sendMessages(String.valueOf(randNum));
     }
     
     
@@ -318,6 +334,18 @@ public class VisualHost {
         }
     }
     
+    
+    
+    private void sendGameMode(String gameMode){
+        String Mode=gameMode;
+        try{
+            Thread.sleep(10000);
+        }catch(InterruptedException e){
+            e.printStackTrace();
+        }
+        
+        host.sendMessages(Mode);
+    } 
     
     
     
