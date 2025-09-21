@@ -54,8 +54,8 @@ public class VisualHost {
         this.host=host;
         userArray = new String[cantPlayers];
         
-        
-        
+        //Envia gamemode al server para ser retenido por el server y luego mandarlo cada vez que se una un nuevo usuario
+        //host.sendMessages(gameMode);
         
         
         
@@ -232,9 +232,23 @@ public class VisualHost {
         screen.add(previewtxt);
         screen.add(panelPreview);
         
+        
+        //Boton de empezar partida
+        JButton empezarPartida = new JButton("Empezar Partida");
+        empezarPartida.setBounds(1050, 550, 225, 74);
+        empezarPartida.addActionListener(new ActionListener(){
+        @Override 
+        public void actionPerformed(ActionEvent e){
+            host.sendMessages(gameMode);//manda el mensaje de modo de juego
+        }
+                    
+        });
+        screen.add(empezarPartida);
+        
+        
         //Boton de terminar partida
         JButton terminarPartida = new JButton("Finalizar Partida");
-        terminarPartida.setBounds(1050, 550, 225, 74);
+        terminarPartida.setBounds(1050, 650, 225, 74);
            terminarPartida.addActionListener(new ActionListener(){
           @Override 
           public void actionPerformed(ActionEvent e){

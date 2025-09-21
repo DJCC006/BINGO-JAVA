@@ -20,6 +20,10 @@ public class Servidor extends Thread {
     private DatagramSocket datagramSocket;
     private int PORT =7775;
     private List<ClientInfo> clients = new ArrayList<>();//Lleva el control de los usuarios conectados
+    //private String almacenadorGameMode="";
+    
+    
+    
     
     private byte[] buffer = new byte[1024];
     
@@ -117,23 +121,38 @@ public class Servidor extends Thread {
                 String username = parts[0];
                 String messageContent = parts.length>1 ? parts[1] : "";
                 
-                
+                //Almacenador interno del server para el modo de juego
+                /*
+                if(messageContent.equals("Lineal") || messageContent.equals("FullHouse")){
+                    almacenadorGameMode=messageContent;
+                }
+                */
                 
                 //Revisar si el cliente 
                 ClientInfo newClient = new ClientInfo(clientAddress, clientPort, username);
                 if(!clients.contains(newClient)){
                     clients.add(newClient);
-                    System.out.println("Nuevo usuario conectado: "+username);
-                    broadcastMessage("SERVIDOR: "+username +" ha entrado a la partida");
+                    //System.out.println("Nuevo usuario conectado: "+username);
+                    /*
+                    try{
+                        Thread.sleep(5000);
+                    }catch(InterruptedException e){
+                        e.printStackTrace();
+                    }
+                    **/
+                    //broadcastMessage(almacenadorGameMode, newClient);
+                    broadcastMessage("SERVIDOR: "+username +" ha entrado a la partida",newClient);
+                   // System.out.println("GameMode: "+almacenadorGameMode);
+                    
                 }
                 
                 //filtra el mensaje
                 if(clientMessage.equalsIgnoreCase("quit")){
                     removeClient(newClient);
-                    broadcastMessage("SERVIDOR: "+ username +" ha dejado la partida");
+                    broadcastMessage("SERVIDOR: "+ username +" ha dejado la partida", newClient);
                     
                 }else{
-                    broadcastMessage(username +":"+messageContent);
+                    broadcastMessage(username +":"+messageContent, newClient);
                     
                 }
                 
@@ -154,15 +173,18 @@ public class Servidor extends Thread {
     }
     
     
-    private void broadcastMessage(String message){
+    private void broadcastMessage(String message, ClientInfo sender){
         byte[] sendData = message.getBytes();
         for(ClientInfo client : clients){
-            try{
-               DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, client.getAddress(), client.getPort());
-               datagramSocket.send(sendPacket);
-            }catch(IOException e){
-                System.out.println("No se pudo enviar el mensaje al cliente "+client.getUsername());
+            if(!client.equals(sender)){
+                try{
+                    DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, client.getAddress(), client.getPort());
+                    datagramSocket.send(sendPacket);
+                }catch(IOException e){
+                    System.out.println("No se pudo enviar el mensaje al cliente "+client.getUsername());
+                }
             }
+          
         }
     }
     
@@ -186,6 +208,14 @@ public class Servidor extends Thread {
         server.startServer();
 */
     }
+    
+    
+    public void mandarGameMode(String message){
+        
+    }
+            
+    
+    
     
     
 }

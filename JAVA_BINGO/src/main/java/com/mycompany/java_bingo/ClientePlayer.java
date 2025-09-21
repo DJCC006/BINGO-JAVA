@@ -74,6 +74,7 @@ public class ClientePlayer {
                
                     System.out.println("\n"+message);
                     Game.setMensaje(message);
+                    
                 
                 
             }

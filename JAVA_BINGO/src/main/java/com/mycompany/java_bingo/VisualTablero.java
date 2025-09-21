@@ -411,29 +411,49 @@ public class VisualTablero {
     public void depurarMensaje(String mensaje){
         try{
           
+                //Revision si es el mensaje para gameMode
+                /*
+                if(mensaje.equals("")){
+                    gameModeLabel=mensaje;
+                    juegoModetxt.setText(gameModeLabel);
+                    System.out.println("Entro a la revision de lineal o fullhouse");
+                    return;
+                }
+                
+*/
+                //Verifica si es un numero entonces
                 String[] parts = mensaje.split(":",2);
                 String messageContent = parts.length>1 ? parts[1] : "";
-                int num=0;
-                boolean compInt=false;
-                try{
-                    num = Integer.parseInt(messageContent);
-                    compInt=true;
-                }catch(NumberFormatException e){
-                    compInt=false;
+                
+                
+                if(messageContent.equals("Lineal")|| messageContent.equals("FullHouse")){
+                   gameModeLabel=messageContent;
+                    juegoModetxt.setText(gameModeLabel);
+                    System.out.println("Entro a la revision de lineal o fullhouse");
+                    return;
+                }else{
+                    int num=0;
+                    boolean compInt=false;
+                    try{
+                        num = Integer.parseInt(messageContent);
+                        compInt=true;
+                    }catch(NumberFormatException e){
+                        compInt=false;
+                    }
+
+                    if(compInt==true){
+                        randNum=num;
+                        cantadosYa[count]=randNum;
+                        actualizarNums(randNum);
+                    }else{
+                        System.out.println("Mensaje recibido"+mensaje);
+                    }
                 }
-
-
-                if(compInt==true){
-                    randNum=num;
-                    cantadosYa[count]=randNum;
-                    actualizarNums(randNum);
-                }else if(compInt!=true){
-                    gameModeLabel=messageContent;
-                    //juegoModetxt.setText(gameModeLabel);
-                }  
-         
+                
+                
+                
         }catch(NullPointerException e){
-            System.out.println("Error XD");
+            e.printStackTrace();
         }
     }
     
