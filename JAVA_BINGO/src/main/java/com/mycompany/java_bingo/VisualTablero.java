@@ -59,7 +59,11 @@ public class VisualTablero {
     private boolean[][] tableroObj = new boolean[5][5];//Variable que almacena la forma del tablero objetivo
     private boolean[][] tableroGamePlay;//tablero que va generando el usuario
     private int[] cantadosYa = new int[75];//Array que lleva control de numeros ya cantados
-
+    private String selectedTablero;//identificador para seleccionar entre los distintos tableros
+    GeneradorTableroLineal spawnerTableros = new GeneradorTableroLineal();//genera todos los tipos de tableros que pueden ser
+    
+    
+    
     
     //Elementos de testeo interno
     private Random spawner = new Random();
@@ -254,16 +258,13 @@ public class VisualTablero {
         OLetter.setBounds(870, 170, 200, 100);
         screen.add(OLetter);
         
-        screen.setVisible(true);
+        screen.setVisible(true);   
     }
     
     
     public static void main(String[] args) {
         VisualTablero ventana = new VisualTablero(username);
-    }
-    
-    
-    
+    } 
     //Testing only
     public void genAndShow(){
         boolean repetido;
@@ -410,23 +411,18 @@ public class VisualTablero {
     
     public void depurarMensaje(String mensaje){
         try{
-          
-                //Revision si es el mensaje para gameMode
-                /*
-                if(mensaje.equals("")){
-                    gameModeLabel=mensaje;
-                    juegoModetxt.setText(gameModeLabel);
-                    System.out.println("Entro a la revision de lineal o fullhouse");
-                    return;
-                }
                 
-*/
                 //Verifica si es un numero entonces
                 String[] parts = mensaje.split(":",2);
                 String messageContent = parts.length>1 ? parts[1] : "";
                 
                 
-                if(messageContent.equals("Lineal")|| messageContent.equals("FullHouse")){
+                if(messageContent.equals("T1")|| messageContent.equals("T2")||messageContent.equals("T3")||messageContent.equals("T4")){
+                    selectedTablero=messageContent;
+                    tableroSeleccion();
+                    System.out.println("Entro en la revision del tipo de tablero");
+                    return;
+                }else if(messageContent.equals("Lineal")|| messageContent.equals("FullHouse")){
                    gameModeLabel=messageContent;
                     juegoModetxt.setText(gameModeLabel);
                     System.out.println("Entro a la revision de lineal o fullhouse");
@@ -449,9 +445,6 @@ public class VisualTablero {
                         System.out.println("Mensaje recibido"+mensaje);
                     }
                 }
-                
-                
-                
         }catch(NullPointerException e){
             e.printStackTrace();
         }
@@ -496,6 +489,27 @@ public class VisualTablero {
             numLabelwColum="O"+numLabel;
         }
         return numLabelwColum;
+    }
+    
+    
+   
+    //metodo para seleccionar el tipo de tablero
+    private void tableroSeleccion(){
+        if(gameModeLabel.equals("FullHouse")){
+            tableroObj= spawnerTableros.getFullHouse();
+            System.out.println("Se ha elegido el tablero FULLHOUSE");
+        }else if(gameModeLabel.equals("Lineal")){
+            if(selectedTablero.equals("T1")){
+                tableroObj=spawnerTableros.getT1();
+                System.out.println("Se ha elegido el tablero T1");
+            }else if(selectedTablero.equals("T2")){
+                tableroObj=spawnerTableros.getT2();
+                System.out.println("Se ha elegido el tablero T2");
+            }else if(selectedTablero.equals("T3")){
+                System.out.println("Se ha elegido el tablero T3");
+                tableroObj=spawnerTableros.getT3();
+            }
+        }
     }
     
     

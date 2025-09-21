@@ -240,6 +240,19 @@ public class VisualHost {
         @Override 
         public void actionPerformed(ActionEvent e){
             host.sendMessages(gameMode);//manda el mensaje de modo de juego
+            
+            if(gameMode.equals("FullHouse")){
+                host.sendMessages("T4");
+            }else{
+                int min=1;
+                int max=3;
+                int typTablero = spawner.nextInt((max-min)+1)+min;
+                String numTablero="T"+String.valueOf(typTablero);
+                host.sendMessages(numTablero);
+            }
+            
+            
+           
         }
                     
         });
