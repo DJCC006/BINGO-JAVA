@@ -22,14 +22,24 @@ import java.util.Random;
 public class VisualHost {
     
     Random spawner = new Random();
+    
+    //Variables senders
     int ballNum;
-    JLabel numGenerado = new JLabel();
+    private static String gameMode;//variable que lleva control del modo de juego
+    private String numLabelwColum;//Variable con numero y su letra de columna 
+    
+    
+    
+    //Elementos para mostrar nums en pantalla
+    JLabel numGenerado = new JLabel();//label para mostrar numero generado
     int[] registeredNums= new int[75];
+    
+    
+    
     //Creacion de tablero general
     JPanel panelNumeros = new JPanel(new GridLayout(15,5));
     private int count=0;
     private JButton[][] numerosBotones = new JButton[15][5];//referencia de todos los botones
-    private static String gameMode;//variable que lleva control del modo de juego
     private String[] userArray;//Array list con los nombres de los usuarios
     private static int cantPlayers;//para que me deje crear la ventana xd
     
@@ -52,7 +62,6 @@ public class VisualHost {
         
         //Generacion de numeros
         int[][] numerosTablero = new int[15][5];
-        
         for(int j=0; j<5; j++){
             
             switch(j){
@@ -152,8 +161,6 @@ public class VisualHost {
         
         
         //Label con numero generado
-        
-        
         numGenerado.setFont(new Font("Serif",Font.BOLD, 30));
         gNumPanel.add(numGenerado);
         numGenerado.setBounds(110, 50, 200, 50);
@@ -181,9 +188,6 @@ public class VisualHost {
           }
                     
         });
-        
-        
-        
         screen.add(generateNum);
         
         
@@ -230,13 +234,7 @@ public class VisualHost {
           }
                     
         });
-        
-        
-        
         screen.add(terminarPartida);
-        
-        
-        
         screen.setVisible(true);
         
     }
@@ -275,7 +273,7 @@ public class VisualHost {
             
             
             //Clasificacion de columna
-            String numLabelwColum="";
+            numLabelwColum="";
             String numLabel= String.valueOf(randNum);
             
             if(randNum>=1 && randNum<=15){
@@ -296,7 +294,6 @@ public class VisualHost {
             ballNum=randNum;
             registeredNums[count]=randNum;
             numGenerado.setText(numLabelwColum);
-            //GameSingleton.getInstancia().getGameSettings().setNumCantado(randNum);
             count++;
     }
     

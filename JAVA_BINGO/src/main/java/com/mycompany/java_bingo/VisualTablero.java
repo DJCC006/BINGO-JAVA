@@ -25,29 +25,49 @@ import javax.swing.JOptionPane;
  */
 public class VisualTablero {
     
-    private int randNum;
-    private Random spawner = new Random();
+    
+    //Variables generales para funcionamiento de programa
+    
+    
+    //Variables de recibimiento
+    private int randNum;//Variable que almacena numero random 
+    private int numCantTxt;//mismo num random pero con letra de donde pertenece
+    private String gameModeLabel; //Variable que recibe el txt del modo de juego
+    
+    
+    
+    //Variables senders
+    private boolean win=false;
+    
+   
+    //Elementos para mini historial
     private JButton showCantado = new JButton();//Boton que muestra numero que se acaba de cantar
     private JPanel panelCantados = new JPanel(new GridLayout(1,5));//Mini historial de numeros
-    private int MaxHistorial =5;
-    private JButton[] historialBotones = new JButton[5];
     private ArrayList<Integer> numerosCantados= new ArrayList();//Historial de numeros ya cantados para mostrar el mini hostiral
-    private int[] cantadosYa = new int[75];
-    private JButton[][] botonesTablero = new JButton[5][5];//Array de botones de tablero
-    
+    private int MaxHistorial =5;
+    private JButton[] historialBotones = new JButton[5];//botones como tal
     int count=0;
     
     
+    //Elementos tablero
+    private JButton[][] botonesTablero = new JButton[5][5];//Array de botones de tablero
+
+    
     //Cosas para funcionalidad de modalidad de juego
-    private boolean[][] tableroObj = new boolean[5][5];
-    private boolean[][] tableroGamePlay;
+    private boolean[][] tableroObj = new boolean[5][5];//Variable que almacena la forma del tablero objetivo
+    private boolean[][] tableroGamePlay;//tablero que va generando el usuario
+    private int[] cantadosYa = new int[75];//Array que lleva control de numeros ya cantados
+
+    
+    //Elementos de testeo interno
+    private Random spawner = new Random();
     
     
     
     
     public VisualTablero(){
    
-        //generateObjArray();//Generar el tablero objetivo
+        //Generar el tablero objetivo
         tableroObj[0][0]=true;
         tableroObj[1][1]=true;
         tableroObj[3][3]=true;
@@ -143,8 +163,6 @@ public class VisualTablero {
         
         
         //Numero cantado actualmente
-        //String.valueOf(GameSingleton.getInstancia().getGameSettings().getNumCantado())
-        
         showCantado.setBounds(450, 0, 100, 100);
         screen.add(showCantado);
         
@@ -191,15 +209,8 @@ public class VisualTablero {
           }
                     
         });
-        
-        
         screen.add(randBtt);
-        
-        
         screen.add(salirBtt);
-        
-        
-        
         
         
         //Agregar el Label de Bingo
@@ -229,15 +240,6 @@ public class VisualTablero {
         OLetter.setFont(new Font("Serif", Font.BOLD, 50));
         OLetter.setBounds(870, 170, 200, 100);
         screen.add(OLetter);
-        
-
-        
-        
-        
-        
-        
-        
-        
         
         screen.setVisible(true);
     }
@@ -286,7 +288,7 @@ public class VisualTablero {
     
     
     
-    //Testing only - genera un simulacro del concepto logico que mandaria el host
+    //Testing only - genera un simulacro del concepto logico que mandaria el host -caso full house
     private void generateObjArray(){
         for(int i=0; i<tableroObj.length; i++){
             for(int j=0; j<tableroObj.length; j++){
@@ -337,7 +339,7 @@ public class VisualTablero {
         
         
         
-        boolean win = Arrays.deepEquals(arrayComprobador,tableroObj);
+        win = Arrays.deepEquals(arrayComprobador,tableroObj);
         if(win==true){
             JOptionPane.showMessageDialog(screen, "HAS GANADO EL BINGO");
         }else{
@@ -367,7 +369,6 @@ public class VisualTablero {
     
     
     public boolean searchNum(int num){
-        
         for(int i=0; i<cantadosYa.length; i++){
             if(num == cantadosYa[i]){
                 return true;
