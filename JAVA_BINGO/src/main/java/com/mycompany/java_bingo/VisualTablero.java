@@ -17,6 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.util.Random;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 /**
@@ -62,7 +63,7 @@ public class VisualTablero {
     private String selectedTablero;//identificador para seleccionar entre los distintos tableros
     GeneradorTableroLineal spawnerTableros = new GeneradorTableroLineal();//genera todos los tipos de tableros que pueden ser
     
-    
+    JLabel tableroshow = new JLabel("0");
     
     
     //Elementos de testeo interno
@@ -107,6 +108,25 @@ public class VisualTablero {
         //Creacion de manejador de tablero para gamePlay
         tableroGamePlay= new boolean[5][5];
         tableroGamePlay[2][2] = true; //El cuadrado del centro se manejara siempre como true;
+        
+        
+        
+        
+       /*
+        JLabel imageTest = new JLabel("AAA");
+        imageTest.setBounds(1000, 500, 300, 200);
+        screen.add(imageTest);
+        
+         java.net.URL imageUrl = getClass().getResource("/bingoT2.png");
+        if(imageUrl!=null){
+            ImageIcon imageIcon = new ImageIcon(imageUrl);
+            imageTest.setIcon(imageIcon);
+            imageTest.setVisible(true);
+        }else{
+            System.err.println("Error");
+        }
+        */
+       
         
         
         
@@ -159,14 +179,19 @@ public class VisualTablero {
         
         //Panel de modo de juego actual
         JPanel panelPreview = new JPanel();
+        panelPreview.setLayout(null);
         panelPreview.setBounds(1010, 300, 225, 300);
-        panelPreview.setBackground(Color.GRAY);
+        panelPreview.setBackground(Color.white);
+        panelPreview.add(tableroshow);
+        tableroshow.setBounds(0,0,225, 300);
+        
         JLabel gameModetxt = new JLabel("Tablero Objetivo");
         gameModetxt.setBounds(1010, 235, 225, 90);
         screen.add(gameModetxt);
         
-        screen.add(panelPreview);
         screen.add(panel);
+        screen.add(panelPreview);
+        
         
         
         //Creacion de numeros ya cantados
@@ -498,16 +523,61 @@ public class VisualTablero {
         if(gameModeLabel.equals("FullHouse")){
             tableroObj= spawnerTableros.getFullHouse();
             System.out.println("Se ha elegido el tablero FULLHOUSE");
+            
+            
+            java.net.URL imageUrl = getClass().getResource("/bingoFullHouse.png");
+            if(imageUrl!=null){
+                ImageIcon imageIcon = new ImageIcon(imageUrl);
+                tableroshow.setIcon(imageIcon);
+                tableroshow.setVisible(true);
+            }else{
+                System.err.println("Error");
+            }
         }else if(gameModeLabel.equals("Lineal")){
             if(selectedTablero.equals("T1")){
                 tableroObj=spawnerTableros.getT1();
                 System.out.println("Se ha elegido el tablero T1");
+                java.net.URL imageUrl = getClass().getResource("/bingoT1.png");
+                if(imageUrl!=null){
+                    ImageIcon imageIcon = new ImageIcon(imageUrl);
+                    tableroshow.setIcon(imageIcon);
+                    tableroshow.repaint();
+                    tableroshow.setVisible(true);
+                }else{
+                    System.err.println("Error");
+                }
+                
+                
             }else if(selectedTablero.equals("T2")){
                 tableroObj=spawnerTableros.getT2();
                 System.out.println("Se ha elegido el tablero T2");
+                
+                
+                java.net.URL imageUrl = getClass().getResource("/bingoT2.png");
+                if(imageUrl!=null){
+                    ImageIcon imageIcon = new ImageIcon(imageUrl);
+                    tableroshow.setIcon(imageIcon);
+                    tableroshow.repaint();
+                    tableroshow.setVisible(true);
+                }else{
+                    System.err.println("Error");
+                }
+                
             }else if(selectedTablero.equals("T3")){
                 System.out.println("Se ha elegido el tablero T3");
                 tableroObj=spawnerTableros.getT3();
+                
+                
+                java.net.URL imageUrl = getClass().getResource("/bingoT3.png");
+                if(imageUrl!=null){
+                    ImageIcon imageIcon = new ImageIcon(imageUrl);
+                    tableroshow.setIcon(imageIcon);
+                    tableroshow.repaint();
+                    tableroshow.setVisible(true);
+                }else{
+                    System.err.println("Error");
+                }
+
             }
         }
     }

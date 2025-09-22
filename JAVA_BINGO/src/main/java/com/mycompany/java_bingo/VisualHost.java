@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import java.util.Random;
+import javax.swing.ImageIcon;
 /**
  *
  * @author David
@@ -47,6 +48,9 @@ public class VisualHost {
     private static int cantPlayers;//para que me deje crear la ventana xd
     
     
+    
+    //Elementos de tablero preview
+    JLabel tableroshow = new JLabel("0");
     
     public VisualHost(String gameMode, int cantPlayers, Cliente host){
         this.gameMode=gameMode;
@@ -227,8 +231,14 @@ public class VisualHost {
         JPanel panelPreview = new JPanel();
         panelPreview.setBounds(1050, 200, 225, 300);
         panelPreview.setBackground(Color.GRAY);
+        panelPreview.setLayout(null);
         JLabel previewtxt = new JLabel("Tablero Objetivo");
-        previewtxt.setBounds(1050, 135, 225, 90);
+        previewtxt.setBounds(1050, 135, 225, 90); 
+        
+        tableroshow.setBounds(0, 0, 225, 300);
+        panelPreview.add(tableroshow );
+        
+        
         screen.add(previewtxt);
         screen.add(panelPreview);
         
@@ -240,16 +250,20 @@ public class VisualHost {
         @Override 
         public void actionPerformed(ActionEvent e){
             host.sendMessages(gameMode);//manda el mensaje de modo de juego
+            String numTablero;
             
             if(gameMode.equals("FullHouse")){
                 host.sendMessages("T4");
+                numTablero="T4";
             }else{
                 int min=1;
                 int max=3;
                 int typTablero = spawner.nextInt((max-min)+1)+min;
-                String numTablero="T"+String.valueOf(typTablero);
+                numTablero="T"+String.valueOf(typTablero);
                 host.sendMessages(numTablero);
             }
+            
+            tableroSeleccion(numTablero);
             
             
            
@@ -375,7 +389,60 @@ public class VisualHost {
     } 
     
     
-    
+    //metodo para seleccionar el tipo de tablero
+    private void tableroSeleccion(String typ){
+        if(gameMode.equals("FullHouse")){
+            System.out.println("Se ha elegido el tablero FULLHOUSE");
+            java.net.URL imageUrl = getClass().getResource("/bingoFullHouse.png");
+            if(imageUrl!=null){
+                ImageIcon imageIcon = new ImageIcon(imageUrl);
+                tableroshow.setIcon(imageIcon);
+                tableroshow.setVisible(true);
+            }else{
+                System.err.println("Error");
+            }
+            
+        }else if(gameMode.equals("Lineal")){
+            if(typ.equals("T1")){
+                System.out.println("Se ha elegido el tablero T1");
+                java.net.URL imageUrl = getClass().getResource("/bingoT1.png");
+                if(imageUrl!=null){
+                    ImageIcon imageIcon = new ImageIcon(imageUrl);
+                    tableroshow.setIcon(imageIcon);
+                    tableroshow.repaint();
+                    tableroshow.setVisible(true);
+                }else{
+                    System.err.println("Error");
+                }
+                
+                
+            }else if(typ.equals("T2")){
+                System.out.println("Se ha elegido el tablero T2");
+                java.net.URL imageUrl = getClass().getResource("/bingoT2.png");
+                if(imageUrl!=null){
+                    ImageIcon imageIcon = new ImageIcon(imageUrl);
+                    tableroshow.setIcon(imageIcon);
+                    tableroshow.repaint();
+                    tableroshow.setVisible(true);
+                }else{
+                    System.err.println("Error");
+                }
+                
+            }else if(typ.equals("T3")){
+                System.out.println("Se ha elegido el tablero T3");
+                java.net.URL imageUrl = getClass().getResource("/bingoT3.png");
+                if(imageUrl!=null){
+                    ImageIcon imageIcon = new ImageIcon(imageUrl);
+                    tableroshow.setIcon(imageIcon);
+                    tableroshow.repaint();
+                    tableroshow.setVisible(true);
+                }else{
+                    System.err.println("Error");
+                }
+
+            }
+        }
+    }
             
     
     
