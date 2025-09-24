@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 /**
@@ -50,14 +51,14 @@ public class UnirsePartida {
           public void actionPerformed(ActionEvent e){
               String username =ingresoPlayers.getText();
               
-              
-              
-              
-              
               VisualTablero pantallaUser = new VisualTablero(username);
-              
-           
               screen.dispose();
+              
+             
+              
+              
+              
+              
           }
                     
         });

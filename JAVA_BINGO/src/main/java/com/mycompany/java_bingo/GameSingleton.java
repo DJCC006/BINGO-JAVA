@@ -11,7 +11,7 @@ package com.mycompany.java_bingo;
 public class GameSingleton {
     private static GameSingleton instancia;
     
-    private GameHandler gameSetting;
+    private VisualHost gameSetting;
     
     private GameSingleton(){};
     
@@ -23,12 +23,16 @@ public class GameSingleton {
     }
     
     
-    public void setGameSetting(GameHandler setting){
+    public void setGameSingleton (VisualHost setting){
         gameSetting = setting;
     }
     
-    public GameHandler getGameSettings(){
+    public VisualHost getGameSettings(){
         return gameSetting;
+    }
+    
+    public void removeGameSingleton(){
+        gameSetting=null;
     }
     
     

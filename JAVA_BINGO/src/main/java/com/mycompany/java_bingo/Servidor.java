@@ -21,14 +21,15 @@ public class Servidor extends Thread {
     private int PORT =7775;
     private List<ClientInfo> clients = new ArrayList<>();//Lleva el control de los usuarios conectados
     //private String almacenadorGameMode="";
-    
+    private VisualHost host;
     
     
     
     private byte[] buffer = new byte[1024];
     
     
-    public Servidor(){
+    public Servidor(VisualHost host){
+        this.host=host;
         try{
              this.datagramSocket= new DatagramSocket(PORT); //Luego ponerlo como un self-inicializadoer
                 System.out.println("Servidor UDP iniciado en el puerto "+PORT);
@@ -47,58 +48,6 @@ public class Servidor extends Thread {
     private void receiveLoop(){
         try{
             
-            /*
-            //Creacion del almacenamiento de datos
-                DatagramPacket recievePacket = new DatagramPacket(buffer, buffer.length);
-                System.out.println("Esperando datos....");
-                
-                datagramSocket.receive(recievePacket);//Recibe datos
-                
-                //Extrae informacion del cliente que ha mandado los datos
-                InetAddress clientAddress = recievePacket.getAddress();
-                int clientPort = recievePacket.getPort();
-                
-                
-                //Mensaje de cliente
-                String clientMessage = new String(recievePacket.getData(), 0,recievePacket.getLength());
-              
-                
-                
-                //Desglose de mensaje
-                String[] parts = clientMessage.split(":",2);
-                String username = parts[0];
-                String messageContent = parts.length>1 ? parts[1] : "";
-                
-                
-                
-                //Revisar si el cliente 
-                ClientInfo newClient = new ClientInfo(clientAddress, clientPort, username);
-                if(!clients.contains(newClient)){
-                    clients.add(newClient);
-                    System.out.println("Nuevo usuario conectado: "+username);
-                    broadcastMessage("SERVIDOR: "+username +" ha entrado a la partida");
-                }
-                
-                //filtra el mensaje
-                if(clientMessage.equalsIgnoreCase("quit")){
-                    removeClient(newClient);
-                    broadcastMessage("SERVIDOR: "+ username +" ha dejado la partida");
-                    
-                }else{
-                    broadcastMessage(username +": "+messageContent);
-                    
-                }
-                
-                System.out.println("Mensaje de "+ username+" desde "+clientAddress.getHostAddress() + ":" +clientPort +": "+ messageContent);
-                
-              */  
-                
-            
-            
-            
-            
-            
-            
             while(true){
                 //Creacion del almacenamiento de datos
                 DatagramPacket recievePacket = new DatagramPacket(buffer, buffer.length);
@@ -110,44 +59,54 @@ public class Servidor extends Thread {
                 InetAddress clientAddress = recievePacket.getAddress();
                 int clientPort = recievePacket.getPort();
                 
-                
                 //Mensaje de cliente
                 String clientMessage = new String(recievePacket.getData(), 0,recievePacket.getLength());
-              
                 
-                
-                //Desglose de mensaje
+                 //Desglose de mensaje
                 String[] parts = clientMessage.split(":",2);
                 String username = parts[0];
                 String messageContent = parts.length>1 ? parts[1] : "";
                 
-                //Almacenador interno del server para el modo de juego
-                /*
-                if(messageContent.equals("Lineal") || messageContent.equals("FullHouse")){
-                    almacenadorGameMode=messageContent;
-                }
-                */
                 
-                //Revisar si el cliente 
+                
                 ClientInfo newClient = new ClientInfo(clientAddress, clientPort, username);
-                if(!clients.contains(newClient)){
-                    clients.add(newClient);
-                    //System.out.println("Nuevo usuario conectado: "+username);
-                    /*
-                    try{
-                        Thread.sleep(5000);
-                    }catch(InterruptedException e){
-                        e.printStackTrace();
+                //adds nuevo jugador
+                
+                
+                //---------
+                if(messageContent.equals("SOLICITAR")){
+                    boolean comprobador = verificarSala();
+                    
+                    if(comprobador==true){
+                        String respuesta ="SERVIDOR:SALA LLENA";
+                        byte[] responseData = respuesta.getBytes();
+                        DatagramPacket responsePacket = new DatagramPacket(responseData, responseData.length, clientAddress, clientPort);
+                        datagramSocket.send(responsePacket);
+                    }else{
+                        String respuesta ="SERVIDOR:OK";
+                        byte[] responseData = respuesta.getBytes();
+                        DatagramPacket responsePacket = new DatagramPacket(responseData, responseData.length, clientAddress, clientPort);
+                        datagramSocket.send(responsePacket);
+                        
+                        if(!clients.contains(newClient)){
+                            clients.add(newClient);
+                            broadcastMessage("SERVIDOR: "+username +" ha entrado a la partida",newClient);
+                        }  
+                         
                     }
-                    **/
-                    //broadcastMessage(almacenadorGameMode, newClient);
-                    broadcastMessage("SERVIDOR: "+username +" ha entrado a la partida",newClient);
-                   // System.out.println("GameMode: "+almacenadorGameMode);
                     
                 }
                 
-                //filtra el mensaje
-                if(clientMessage.equalsIgnoreCase("quit")){
+                
+                //Filtracion de mensaje
+                if(messageContent.equals("WIN")){
+                    broadcastMessage("SERVIDOR:"+username+" HA GANADO LA PARTIDA",newClient);
+                }
+                
+                
+                
+                
+                if(messageContent.equalsIgnoreCase("quit")){
                     removeClient(newClient);
                     broadcastMessage("SERVIDOR: "+ username +" ha dejado la partida", newClient);
                     
@@ -210,11 +169,19 @@ public class Servidor extends Thread {
     }
     
     
-    public void mandarGameMode(String message){
-        
+    public List mandarPlayerList(){
+        return clients;
     }
             
-    
+     public boolean verificarSala(){
+        int countPlayersLive =clients.size()-1;//Menos uno ya que se decuenta el host
+        int salaPlayers= host.getNumPlayers();
+        if(countPlayersLive>=salaPlayers){
+            return true;
+        }else{
+            return false;
+        }
+    }
     
     
     

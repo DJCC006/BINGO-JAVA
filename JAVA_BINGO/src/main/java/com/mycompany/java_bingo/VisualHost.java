@@ -9,13 +9,18 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 /**
  *
  * @author David
@@ -33,6 +38,9 @@ public class VisualHost {
     private String numLabelwColum;//Variable con numero y su letra de columna 
     
     
+    //Variables receivers
+    private String mensajeServer;
+    
     
     //Elementos para mostrar nums en pantalla
     JLabel numGenerado = new JLabel();//label para mostrar numero generado
@@ -47,21 +55,33 @@ public class VisualHost {
     private String[] userArray;//Array list con los nombres de los usuarios
     private static int cantPlayers;//para que me deje crear la ventana xd
     
+    //linsk con info del server con respecto a lista de jugadores
+    private static Servidor server;
+    List playerList;
+    JTextArea visualPlayers = new JTextArea();
+    private ScheduledExecutorService scheduler;
+    private boolean salaLlena=false;
     
     
     //Elementos de tablero preview
     JLabel tableroshow = new JLabel("0");
     
-    public VisualHost(String gameMode, int cantPlayers, Cliente host){
+    public VisualHost(String gameMode, int cantPlayers){
         this.gameMode=gameMode;
         this.cantPlayers=cantPlayers;
-        this.host=host;
         userArray = new String[cantPlayers];
-        
         //Envia gamemode al server para ser retenido por el server y luego mandarlo cada vez que se una un nuevo usuario
         //host.sendMessages(gameMode);
         
         
+        
+        //Creacion de server
+        server = new Servidor(this);
+        server.startServer();;
+
+        //Creacion de host as a player
+        host = new Cliente("HOST", "localhost", 7775);
+        host.start();
         
         //Creacion de JFrame
         JFrame screen = new JFrame();
@@ -70,6 +90,22 @@ public class VisualHost {
         screen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         screen.setLocationRelativeTo(null);
         screen.setLayout(null);
+        
+        
+        
+        //TextArea con jugadores conectados
+        JLabel playerstxt = new JLabel("JUGADORES CONECTADOS");
+        playerstxt.setFont(new Font("Serif", Font.ITALIC, 15));
+        playerstxt.setBounds(165, 365, 250, 50);
+        
+        
+        visualPlayers.setBounds(140, 410, 250, 300);
+        screen.add(visualPlayers);
+        screen.add(playerstxt);
+        
+        startPlayerUpdates();
+        
+        
         
         
         
@@ -204,15 +240,7 @@ public class VisualHost {
         screen.add(generateNum);
         
         
-        //TextArea con jugadores conectados
-        JLabel playerstxt = new JLabel("JUGADORES CONECTADOS");
-        playerstxt.setFont(new Font("Serif", Font.ITALIC, 15));
-        playerstxt.setBounds(165, 365, 250, 50);
         
-        JTextArea visualPlayers = new JTextArea();
-        visualPlayers.setBounds(140, 410, 250, 300);
-        screen.add(visualPlayers);
-        screen.add(playerstxt);
         
         
         //Display GameMode
@@ -249,9 +277,14 @@ public class VisualHost {
         empezarPartida.addActionListener(new ActionListener(){
         @Override 
         public void actionPerformed(ActionEvent e){
+            
+            /*
+            String listedPlayers =cargarJugadores();
+            visualPlayers.setText(listedPlayers);
+            */
+            
             host.sendMessages(gameMode);//manda el mensaje de modo de juego
             String numTablero;
-            
             if(gameMode.equals("FullHouse")){
                 host.sendMessages("T4");
                 numTablero="T4";
@@ -264,9 +297,6 @@ public class VisualHost {
             }
             
             tableroSeleccion(numTablero);
-            
-            
-           
         }
                     
         });
@@ -279,6 +309,7 @@ public class VisualHost {
            terminarPartida.addActionListener(new ActionListener(){
           @Override 
           public void actionPerformed(ActionEvent e){
+              server.closeServerSocket();
               MenuPrincipal menu = new MenuPrincipal();
               screen.dispose();
           }
@@ -286,18 +317,11 @@ public class VisualHost {
         });
         screen.add(terminarPartida);
         screen.setVisible(true);
-        
-        
-        
-        
-        
-        
-        
     }
         
 
     public static void main(String[] args) {
-        VisualHost ventana = new VisualHost(gameMode, cantPlayers, host);
+        VisualHost ventana = new VisualHost(gameMode, cantPlayers);
         
     }
     
@@ -389,7 +413,7 @@ public class VisualHost {
     } 
     
     
-    //metodo para seleccionar el tipo de tablero
+    //metodo para mostrar el tipo de tablero
     private void tableroSeleccion(String typ){
         if(gameMode.equals("FullHouse")){
             System.out.println("Se ha elegido el tablero FULLHOUSE");
@@ -443,6 +467,75 @@ public class VisualHost {
             }
         }
     }
+    
+    //Metodo para actualizar la lista con los jugadores conectados en sala
+    private void cargarJugadores(){
+        String listaPlayers="";
+        for(int i=0; i<playerList.size(); i++){
+            ClientInfo playetemp= (ClientInfo) playerList.get(i);
+            String playerName =playetemp.getUsername();
+            if(playerName.equals("HOST")){
+                playerName="";
+                listaPlayers+="\n"+playerName+"\n";
+                visualPlayers.setText(listaPlayers);
+            }else{
+                listaPlayers+="\n"+playerName+"\n";
+                visualPlayers.setText(listaPlayers);
+                System.out.println(listaPlayers);
+            }
+            
+        }
+    }
+    
+    
+    //Metodo que ira actualizando la lista de jugadores en tiempo real
+    public void startPlayerUpdates(){
+        scheduler = Executors.newSingleThreadScheduledExecutor();
+        
+        scheduler.scheduleAtFixedRate(new Runnable(){
+            @Override
+            public void run(){
+                //Obtencion de lista de jugadores
+                playerList =server.mandarPlayerList();
+                
+                SwingUtilities.invokeLater(()->{
+                    cargarJugadores();
+                    verificarSala();
+                });
+                
+            }
+        }, 0, 2, TimeUnit.SECONDS);
+        
+    }
+    
+    //apaga la revision 
+    public void stopPlayerUpdates(){
+        if(scheduler!= null){
+            scheduler.shutdown();
+        }
+    }
+    
+    
+    //Metodo para comprobar el estado de la sala si llena o vacia
+    public boolean verificarSala(){
+        int countPlayersLive =playerList.size();
+        if(countPlayersLive>=cantPlayers){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    //metodo para obtener el estado de la sala
+    public boolean getstatusSala(){
+        return salaLlena;
+    }
+    
+    
+    public int getNumPlayers(){
+        return cantPlayers;
+    }
+    
             
     
     

@@ -26,9 +26,12 @@ public class Cliente {
     
     private String msgalmacenado;//Valido solo para jugadores
     
+    private VisualHost hostView;
+    
     
     public Cliente(String username, String hostname, int port){
         try{
+            this.hostView=hostView;
             this.username = username;
             this.serverAddress = InetAddress.getByName(hostname);
             this.serverport = port;
@@ -51,7 +54,7 @@ public class Cliente {
     
     private void sendInitialMessage(){//Mensaje inicial que se manda a la hora de conectarse al servidor
         try{
-            String messageToSend = this.username + " se ha unido";
+            String messageToSend = this.username +":SOLICITAR";
             byte[] buffer =messageToSend.getBytes();
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, serverAddress, serverport);
             clientSocket.send(packet);

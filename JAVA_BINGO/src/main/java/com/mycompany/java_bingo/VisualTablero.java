@@ -65,6 +65,7 @@ public class VisualTablero {
     
     JLabel tableroshow = new JLabel("0");
     
+    JFrame screen = new JFrame();
     
     //Elementos de testeo interno
     private Random spawner = new Random();
@@ -83,21 +84,8 @@ public class VisualTablero {
         player.start();
         this.player=player;
         
-        
-        
-        //Generar el tablero objetivo
-        tableroObj[0][0]=true;
-        tableroObj[1][1]=true;
-        tableroObj[3][3]=true;
-        tableroObj[4][4]=true;
-        tableroObj[0][4]=true;
-        tableroObj[1][3]=true;
-        tableroObj[3][1]=true;
-        tableroObj[4][0]=true;
-        tableroObj[2][2]=true;
-        
+        //Verificacion aqui
         //Creacion de JFrame
-        JFrame screen = new JFrame();
         screen.setSize(1420, 800);  //1205, 700
         screen.setResizable(false);
         screen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -234,6 +222,7 @@ public class VisualTablero {
         salirBtt.addActionListener(new ActionListener(){
           @Override 
           public void actionPerformed(ActionEvent e){
+              player.sendMessages("quit");
               MenuPrincipal menu  = new MenuPrincipal();
               screen.dispose();
           }
@@ -386,13 +375,22 @@ public class VisualTablero {
         
         win = Arrays.deepEquals(arrayComprobador,tableroObj);
         if(win==true){
+            player.sendMessages("WIN");
             JOptionPane.showMessageDialog(screen, "HAS GANADO EL BINGO");
+            
+            
+            //Esto se ha de modificar, pues hay que ver si se saca a todo mundo a la hora de tener un win o que pex
+            
+            
+            
+            
         }else{
             JOptionPane.showConfirmDialog(screen, "AUN NO PAPU");
         }
         
         
         //Print de array usuario
+        System.out.println("");
         for(int i=0; i<5; i++){
             for(int j=0; j<5; j++){
                 System.out.print(" "+arrayComprobador[i][j]+" ");
@@ -441,6 +439,23 @@ public class VisualTablero {
                 String[] parts = mensaje.split(":",2);
                 String messageContent = parts.length>1 ? parts[1] : "";
                 
+                //Caso de depuracion para mensaje de sala llena
+                if(messageContent.equals("SALA LLENA")){
+                    screen.dispose();
+                    JOptionPane.showMessageDialog(null, "AVISO: No se puede unir a partida, sala llena");
+                    MenuPrincipal back = new MenuPrincipal();
+                    return;
+                }
+                
+                //Caso de depuracion para recibimiento de win
+                if(messageContent.contains("GANADO")){
+                    JOptionPane.showMessageDialog(null, messageContent);
+                    player.sendMessages("quit");//desconecte del servidor
+                    MenuPrincipal menu = new MenuPrincipal();
+                    screen.dispose();
+                    return;
+                }
+                
                 
                 if(messageContent.equals("T1")|| messageContent.equals("T2")||messageContent.equals("T3")||messageContent.equals("T4")){
                     selectedTablero=messageContent;
@@ -466,6 +481,7 @@ public class VisualTablero {
                         randNum=num;
                         cantadosYa[count]=randNum;
                         actualizarNums(randNum);
+                        count++;
                     }else{
                         System.out.println("Mensaje recibido"+mensaje);
                     }

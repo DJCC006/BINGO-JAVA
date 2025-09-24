@@ -70,37 +70,37 @@ public class creacionPartida {
               System.out.println(modojuego);
               String catchertxt=ingresoPlayers.getText(); 
               int numPlayers;//cantidad de jugadores
-              if(catchertxt.equals("")){
-                    numPlayers=0;
-              }else{
-                    numPlayers= Integer.parseInt(catchertxt);
+              boolean comprobador =false;
+              numPlayers=0;
+              try{
+                   if(catchertxt.equals("")){
+                   
+                    }else{
+                          numPlayers= Integer.parseInt(catchertxt);
+                    }
+                    System.out.println(numPlayers);
+                    comprobador=true;
+              }catch(NumberFormatException a){
+                  JOptionPane.showMessageDialog(screen, "AVISO: Solamente se aceptan numeros enteros");
               }
-              System.out.println(numPlayers);
-              
-              if(numPlayers>15){
+             
+              if(comprobador==true){
+                  if(numPlayers>15){
                   JOptionPane.showMessageDialog(screen, "AVISO: Maximo de Jugadores Superado");
-              }else{
-                  
-                  //Crea los settings del juego para usarlo entre distintas ventanas
-                  GameHandler settings = new GameHandler();
-                  settings.setGameMode(modojuego);
-                  GameSingleton.getInstancia().setGameSetting(settings);
-                  
-                   
-                   
-                    //Creacion de server
-                    Servidor server = new Servidor();
-                    server.startServer();;
-                    
-                    //Creacion de host as a player
-                    Cliente host = new Cliente("HOST", "localhost", 7775);
-                    host.start();
-                    
-                    VisualHost pantallaHost = new VisualHost(modojuego, numPlayers, host);
-                    
-                    
-                   screen.dispose();
+                    }else{
+
+                        //Crea los settings del juego para usarlo entre distintas ventanas
+                        GameHandler settings = new GameHandler();
+                        settings.setGameMode(modojuego);
+                        //GameSingleton.getInstancia().setGameSetting(settings);
+
+                          VisualHost pantallaHost = new VisualHost(modojuego, numPlayers);
+                          GameSingleton.getInstancia().setGameSingleton(pantallaHost);
+
+                         screen.dispose();
+                    }
               }
+              
             }     
         });
         screen.add(crearBtt);

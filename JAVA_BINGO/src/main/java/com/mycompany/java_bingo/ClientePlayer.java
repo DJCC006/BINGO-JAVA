@@ -13,6 +13,7 @@ import java.net.InetAddress;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -53,7 +54,7 @@ public class ClientePlayer {
     
     private void sendInitialMessage(){//Mensaje inicial que se manda a la hora de conectarse al servidor
         try{
-            String messageToSend = this.username + " se ha unido";
+            String messageToSend = this.username+":SOLICITAR";
             byte[] buffer =messageToSend.getBytes();
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, serverAddress, serverport);
             clientSocket.send(packet);
@@ -72,8 +73,18 @@ public class ClientePlayer {
                 clientSocket.receive(packet);
                 String message = new String(packet.getData(), 0, packet.getLength());
                
+                
+                
+                
+                if(message.equals("SALA LLENA")){
+                    Game.setMensaje(message);
+                }else{
                     System.out.println("\n"+message);
                     Game.setMensaje(message);
+                }
+                
+                
+              
                     
                 
                 
@@ -128,6 +139,9 @@ public class ClientePlayer {
         return msgalmacenado;
     }
     
+    public String getUsername(){
+        return username;
+    }
     
     public static void main(String[] args) {
         /*
