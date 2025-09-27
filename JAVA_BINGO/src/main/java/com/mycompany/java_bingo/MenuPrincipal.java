@@ -4,6 +4,8 @@
  */
 package com.mycompany.java_bingo;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,8 +19,18 @@ import javax.swing.JLabel;
  */
 public class MenuPrincipal {
     public MenuPrincipal(){
+        
+        
+        String rutacompleta = "C:\\Users\\David\\Documents\\Documentos UNI\\I Jahre\\IV Period\\Prácticas Programación\\Juego Bingo\\JAVA_BINGO\\src\\main\\java\\resources\\firstMENU.png";
+        AplicarFondos panelFondo = new AplicarFondos(rutacompleta); 
+        panelFondo.setLayout(new BorderLayout());
+        
+        
+        
+        
           //Creacion de JFrame
         JFrame screen = new JFrame();
+        screen.setContentPane(panelFondo);
         screen.setSize(681, 432);  //Tamaño standard para menus
         screen.setResizable(false);
         screen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -27,14 +39,21 @@ public class MenuPrincipal {
         
         //Creacion de titulo
         JLabel tituloGeneral = new JLabel("Menu Principal");
-        tituloGeneral.setFont(new Font("Serif", Font.BOLD, 50));
+        tituloGeneral.setForeground(Color.WHITE);
+        tituloGeneral.setFont(new Font("Dialog", Font.BOLD, 50));
         tituloGeneral.setBounds(171, 5, 500, 100);
         screen.add(tituloGeneral);
         
         //Creacion de botones
         JButton botonCrear = new JButton("Crear Partida");
+        botonCrear.setBackground(Color.orange);
+        botonCrear.setFont(new Font("Dialog", Font.BOLD, 20));
         JButton botonUnirse = new JButton("Unirse a Partida");
+        botonUnirse.setBackground(Color.orange);
+        botonUnirse.setFont(new Font("Dialog", Font.BOLD, 20));
         JButton botonregresar = new JButton("Regresar");
+        botonregresar.setFont(new Font("Dialog", Font.BOLD, 20));
+        botonregresar.setBackground(Color.orange);
         botonCrear.setBounds(230, 120, 200, 50);
         botonCrear.addActionListener(new ActionListener(){
           @Override 

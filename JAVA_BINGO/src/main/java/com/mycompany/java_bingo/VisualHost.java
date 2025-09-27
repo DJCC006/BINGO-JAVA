@@ -4,6 +4,7 @@
  */
 package com.mycompany.java_bingo;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -19,8 +20,10 @@ import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
 /**
  *
  * @author David
@@ -64,7 +67,7 @@ public class VisualHost {
     
     
     //Elementos de tablero preview
-    JLabel tableroshow = new JLabel("0");
+    JLabel tableroshow = new JLabel("");
     
     public VisualHost(String gameMode, int cantPlayers){
         this.gameMode=gameMode;
@@ -83,8 +86,20 @@ public class VisualHost {
         host = new Cliente("HOST", "localhost", 7775);
         host.start();
         
+        
+        
+        //Creacion de fondo de pantalla
+        String rutacompleta = "C:\\Users\\David\\Documents\\Documentos UNI\\I Jahre\\IV Period\\Prácticas Programación\\Juego Bingo\\JAVA_BINGO\\src\\main\\java\\resources\\mainBC.jpg";
+        AplicarFondos panelFondo = new AplicarFondos(rutacompleta); 
+        panelFondo.setLayout(new BorderLayout());
+
+      
+        
+        
+        
         //Creacion de JFrame
         JFrame screen = new JFrame();
+        screen.setContentPane(panelFondo);
         screen.setSize(1420, 800);  
         screen.setResizable(false);
         screen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -95,7 +110,8 @@ public class VisualHost {
         
         //TextArea con jugadores conectados
         JLabel playerstxt = new JLabel("JUGADORES CONECTADOS");
-        playerstxt.setFont(new Font("Serif", Font.ITALIC, 15));
+        playerstxt.setFont(new Font("Dialog", Font.ITALIC, 15));
+        playerstxt.setForeground(Color.white);
         playerstxt.setBounds(165, 365, 250, 50);
         
         
@@ -158,12 +174,14 @@ public class VisualHost {
         }
         
         //Agregado de numeros
+        Border countedNumBorder = BorderFactory.createLineBorder(Color.DARK_GRAY,2);
         for(int i=0; i<15; i++){
             for(int j=0; j<5; j++){
                 int num=numerosTablero[i][j];
                 numerosBotones[i][j] = new JButton(String.valueOf(num));
                 numerosBotones[i][j].setEnabled(false);
                 numerosBotones[i][j].setOpaque(true);
+                numerosBotones[i][j].setBorder(countedNumBorder);
                 numerosBotones[i][j].setBackground(Color.white);
                 panelNumeros.add(numerosBotones[i][j]);
             }
@@ -174,28 +192,33 @@ public class VisualHost {
         
         //Agregar el Label de Bingo
         JLabel BLetter = new JLabel("B ");
-        BLetter.setFont(new Font("Serif", Font.BOLD, 50));
+        BLetter.setFont(new Font("Dialog", Font.BOLD, 50));
+        BLetter.setForeground(Color.white);
         BLetter.setBounds(535, 25, 200, 100);
         screen.add(BLetter);
         
         JLabel ILetter = new JLabel("I ");
-        ILetter.setFont(new Font("Serif", Font.BOLD, 50));
+        ILetter.setFont(new Font("Dialog", Font.BOLD, 50));
+        ILetter.setForeground(Color.white);
         ILetter.setBounds(630, 25, 200, 100);
         screen.add(ILetter);
         screen.add(BLetter);
         
         JLabel NLetter = new JLabel("N ");
-        NLetter.setFont(new Font("Serif", Font.BOLD, 50));
+        NLetter.setFont(new Font("Dialog", Font.BOLD, 50));
+        NLetter.setForeground(Color.white);
         NLetter.setBounds(705, 25, 200, 100);
         screen.add(NLetter);
         
         JLabel GLetter = new JLabel("G ");
-        GLetter.setFont(new Font("Serif", Font.BOLD, 50));
+        GLetter.setFont(new Font("Dialog", Font.BOLD, 50));
+        GLetter.setForeground(Color.white);
         GLetter.setBounds(785, 25, 200, 100);
         screen.add(GLetter);
         
         JLabel OLetter = new JLabel("O ");
-        OLetter.setFont(new Font("Serif", Font.BOLD, 50));
+        OLetter.setFont(new Font("Dialog", Font.BOLD, 50));
+        OLetter.setForeground(Color.white);
         OLetter.setBounds(870, 25, 200, 100);
         screen.add(OLetter);
         
@@ -206,23 +229,32 @@ public class VisualHost {
         JPanel gNumPanel = new JPanel();
         gNumPanel.setBounds(145, 50, 250, 123);
         gNumPanel.setLayout(null);//Deshabilita el layout por defecto y permite mover cosas en el panel
-        gNumPanel.setBackground(Color.WHITE);
+        gNumPanel.setBackground(Color.gray);
+        Border numBorder = BorderFactory.createLineBorder(Color.yellow,5);
+        gNumPanel.setBorder(numBorder);
         
         
         //Label con numero generado
         numGenerado.setFont(new Font("Serif",Font.BOLD, 30));
+        numGenerado.setForeground(Color.white);
         gNumPanel.add(numGenerado);
         numGenerado.setBounds(110, 50, 200, 50);
         
         JLabel tituloGenerado = new JLabel("NUEVO NUMERO:");
-        tituloGenerado.setFont(new Font("Serif", Font.ITALIC, 15));
+        tituloGenerado.setFont(new Font("dialog", Font.ITALIC, 15));
+        tituloGenerado.setForeground(Color.white);
         gNumPanel.add(tituloGenerado);
         tituloGenerado.setBounds(65, 20, 200, 50);
         screen.add(gNumPanel);
         
         
         //Boton para generar nuevo numero
+        Border genNumBorder = BorderFactory.createLineBorder(Color.gray,5);
         JButton generateNum = new JButton("RAND NUM");
+        generateNum.setFont(new Font("Dialog", Font.BOLD, 25));
+        generateNum.setBackground(Color.yellow);
+        generateNum.setForeground(Color.DARK_GRAY);
+        generateNum.setBorder(genNumBorder);
         generateNum.setBounds(190, 200, 150, 150);
         generateNum.addActionListener(new ActionListener(){
           @Override 
@@ -245,10 +277,16 @@ public class VisualHost {
         
         //Display GameMode
         JLabel showGameMode = new JLabel("MODO DE JUEGO");
-        showGameMode.setFont(new Font("Serif", Font.BOLD, 30));
+        showGameMode.setFont(new Font("Dialogue", Font.BOLD, 30));
+        showGameMode.setForeground(Color.white);
         showGameMode.setBounds(1050, 50, 300, 50);
+        
+       
+        
+        
         JLabel gameModetxt = new JLabel(gameMode);
-        gameModetxt.setFont(new Font("Serif", Font.ITALIC, 20));
+        gameModetxt.setFont(new Font("Dialogue", Font.ITALIC, 30));
+        gameModetxt.setForeground(Color.white);
         gameModetxt.setBounds(1050, 80, 300, 50);
         screen.add(gameModetxt);
         screen.add(showGameMode);
@@ -259,9 +297,13 @@ public class VisualHost {
         JPanel panelPreview = new JPanel();
         panelPreview.setBounds(1050, 200, 225, 300);
         panelPreview.setBackground(Color.GRAY);
+        Border PanelBorder = BorderFactory.createLineBorder(Color.yellow,5);
+        panelPreview.setBorder(PanelBorder);
         panelPreview.setLayout(null);
-        JLabel previewtxt = new JLabel("Tablero Objetivo");
-        previewtxt.setBounds(1050, 135, 225, 90); 
+        JLabel previewtxt = new JLabel("TABLERO OBJETIVO");
+        previewtxt.setFont(new Font("Dialog", Font.BOLD, 20));
+        previewtxt.setForeground(Color.white);
+        previewtxt.setBounds(1055, 135, 225, 90); 
         
         tableroshow.setBounds(0, 0, 225, 300);
         panelPreview.add(tableroshow );
@@ -274,14 +316,13 @@ public class VisualHost {
         //Boton de empezar partida
         JButton empezarPartida = new JButton("Empezar Partida");
         empezarPartida.setBounds(1050, 550, 225, 74);
+        empezarPartida.setBackground(Color.YELLOW);
+        empezarPartida.setFont(new Font("Dialog", Font.BOLD, 20));
+        empezarPartida.setForeground(Color.DARK_GRAY);
+        empezarPartida.setBorder(BorderFactory.createLineBorder(Color.gray,2));
         empezarPartida.addActionListener(new ActionListener(){
         @Override 
         public void actionPerformed(ActionEvent e){
-            
-            /*
-            String listedPlayers =cargarJugadores();
-            visualPlayers.setText(listedPlayers);
-            */
             
             host.sendMessages(gameMode);//manda el mensaje de modo de juego
             String numTablero;
@@ -297,6 +338,7 @@ public class VisualHost {
             }
             
             tableroSeleccion(numTablero);
+            empezarPartida.setEnabled(false);
         }
                     
         });
@@ -305,6 +347,9 @@ public class VisualHost {
         
         //Boton de terminar partida
         JButton terminarPartida = new JButton("Finalizar Partida");
+        terminarPartida.setBackground(Color.YELLOW);
+        terminarPartida.setForeground(Color.darkGray);
+        terminarPartida.setFont(new Font("Dialog", Font.BOLD, 20));
         terminarPartida.setBounds(1050, 650, 225, 74);
            terminarPartida.addActionListener(new ActionListener(){
           @Override 

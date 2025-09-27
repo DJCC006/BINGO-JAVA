@@ -4,6 +4,8 @@
  */
 package com.mycompany.java_bingo;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,8 +21,17 @@ import javax.swing.JTextField;
  */
 public class UnirsePartida {
     public UnirsePartida(){
+        
+        
+        //Creacion de fondo de pantalla
+        String rutacompleta = "C:\\Users\\David\\Documents\\Documentos UNI\\I Jahre\\IV Period\\Prácticas Programación\\Juego Bingo\\JAVA_BINGO\\src\\main\\java\\resources\\firstMENU.png";
+        AplicarFondos panelFondo = new AplicarFondos(rutacompleta); 
+        panelFondo.setLayout(new BorderLayout());
+        
+        
          //Creacion de JFrame
         JFrame screen = new JFrame();
+        screen.setContentPane(panelFondo);
         screen.setSize(681, 432);  //Tamaño standard para menus
         screen.setResizable(false);
         screen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -29,13 +40,15 @@ public class UnirsePartida {
         
         //Creacion de titulo
         JLabel tituloGeneral = new JLabel("Unirse a Partida");
-        tituloGeneral.setFont(new Font("Serif", Font.BOLD, 50));
-        tituloGeneral.setBounds(171, 5, 700, 100);
+        tituloGeneral.setForeground(Color.WHITE);
+        tituloGeneral.setFont(new Font("DIALOG", Font.BOLD, 50));
+        tituloGeneral.setBounds(155, 25, 700, 100);
         screen.add(tituloGeneral);
         
         //Obtencion de info
         JLabel playerstxt= new JLabel("Ingrese su nombre de usuario: ");
-        playerstxt.setFont(new Font("Serif", Font.ITALIC, 20));
+        playerstxt.setForeground(Color.WHITE);
+        playerstxt.setFont(new Font("Dialog", Font.ITALIC, 20));
         playerstxt.setBounds(200, 120, 300, 50);
         JTextField ingresoPlayers = new JTextField();
         ingresoPlayers.setBounds(191, 180, 300, 30);
@@ -45,6 +58,8 @@ public class UnirsePartida {
         
         //Creacion de botones
         JButton crearBtt = new JButton("Unirse Partida");
+        crearBtt.setBackground(Color.orange);
+        crearBtt.setFont(new Font("Dialog", Font.BOLD, 15));
         crearBtt.setBounds(150, 250, 150, 50);
         crearBtt.addActionListener(new ActionListener(){
           @Override 
@@ -66,6 +81,8 @@ public class UnirsePartida {
         
         
         JButton regresarBtt = new JButton("Regresar");
+        regresarBtt.setBackground(Color.orange);
+        regresarBtt.setFont(new Font("Dialog", Font.BOLD, 20));
         regresarBtt.setBounds(380, 250, 150, 50);
          regresarBtt.addActionListener(new ActionListener(){
           @Override 

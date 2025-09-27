@@ -4,6 +4,8 @@
  */
 package com.mycompany.java_bingo;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,8 +22,16 @@ import javax.swing.JTextField;
  */
 public class creacionPartida {
     public creacionPartida(){
+        
+        
+        //Creacion de fondo de pantalla
+        String rutacompleta = "C:\\Users\\David\\Documents\\Documentos UNI\\I Jahre\\IV Period\\Prácticas Programación\\Juego Bingo\\JAVA_BINGO\\src\\main\\java\\resources\\firstMENU.png";
+        AplicarFondos panelFondo = new AplicarFondos(rutacompleta); 
+        panelFondo.setLayout(new BorderLayout());
+        
           //Creacion de JFrame
         JFrame screen = new JFrame();
+        screen.setContentPane(panelFondo);
         screen.setSize(681, 432);  //Tamaño standard para menus
         screen.setResizable(false);
         screen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -30,14 +40,16 @@ public class creacionPartida {
         
         //Creacion de titulo
         JLabel tituloGeneral = new JLabel("Creacion de Partida");
-        tituloGeneral.setFont(new Font("Serif", Font.BOLD, 50));
-        tituloGeneral.setBounds(131, 5, 700, 100);
+        tituloGeneral.setForeground(Color.WHITE);
+        tituloGeneral.setFont(new Font("Dialog", Font.BOLD, 50));
+        tituloGeneral.setBounds(115, 30, 700, 100);
         screen.add(tituloGeneral);
         
         //Obtencion de info
         JLabel playerstxt= new JLabel("Cantidad de jugadores (Max 15): ");
-        playerstxt.setFont(new Font("Serif", Font.ITALIC, 10));
-        playerstxt.setBounds(150, 120, 300, 50);
+        playerstxt.setForeground(Color.WHITE);
+        playerstxt.setFont(new Font("Dialog", Font.ITALIC, 15));
+        playerstxt.setBounds(125, 135, 300, 50);
         JTextField ingresoPlayers = new JTextField();
         ingresoPlayers.setBounds(150, 180, 150, 30);
         screen.add(ingresoPlayers);
@@ -49,8 +61,9 @@ public class creacionPartida {
         
         
         JLabel modetxt = new JLabel("Modo de Juego:");
-        modetxt.setFont(new Font("Serif", Font.ITALIC, 15));
-        modetxt.setBounds(380, 130, 150, 30);
+        modetxt.setForeground(Color.WHITE);
+        modetxt.setFont(new Font("Dialog", Font.ITALIC, 17));
+        modetxt.setBounds(380, 145, 150, 30);
         screen.add(modetxt);
                 
         String[] modosJuego = {"FullHouse", "Lineal"};
@@ -61,6 +74,8 @@ public class creacionPartida {
         
         //Creacion de botones
         JButton crearBtt = new JButton("Crear Partida");
+        crearBtt.setBackground(Color.orange);
+        crearBtt.setFont(new Font("Dialog", Font.BOLD, 15));
         crearBtt.setBounds(150, 250, 150, 50);
         crearBtt.addActionListener(new ActionListener(){
           @Override 
@@ -107,6 +122,8 @@ public class creacionPartida {
         
         
         JButton regresarBtt = new JButton("Regresar");
+        regresarBtt.setBackground(Color.orange);
+        regresarBtt.setFont(new Font("Dialog", Font.BOLD, 20));
         regresarBtt.setBounds(380, 250, 150, 50);
          regresarBtt.addActionListener(new ActionListener(){
           @Override 

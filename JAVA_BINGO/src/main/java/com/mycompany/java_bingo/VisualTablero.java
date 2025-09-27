@@ -8,6 +8,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -17,8 +18,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.util.Random;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.border.Border;
 
 /**
  *
@@ -63,7 +66,7 @@ public class VisualTablero {
     private String selectedTablero;//identificador para seleccionar entre los distintos tableros
     GeneradorTableroLineal spawnerTableros = new GeneradorTableroLineal();//genera todos los tipos de tableros que pueden ser
     
-    JLabel tableroshow = new JLabel("0");
+    JLabel tableroshow = new JLabel("");
     
     JFrame screen = new JFrame();
     
@@ -74,7 +77,7 @@ public class VisualTablero {
     
     
     public VisualTablero(String username){
-        ;
+        
         this.username=username;
         System.out.println(username);
         
@@ -84,37 +87,28 @@ public class VisualTablero {
         player.start();
         this.player=player;
         
+        String rutacompleta = "C:\\Users\\David\\Documents\\Documentos UNI\\I Jahre\\IV Period\\Prácticas Programación\\Juego Bingo\\JAVA_BINGO\\src\\main\\java\\resources\\mainBC.jpg";
+        AplicarFondos panelFondo = new AplicarFondos(rutacompleta);
+        panelFondo.setLayout(new BorderLayout());
+        screen.setContentPane(panelFondo);
+        
+        
+        
         //Verificacion aqui
-        //Creacion de JFrame
+        //Creacion de JFrame[
         screen.setSize(1420, 800);  //1205, 700
         screen.setResizable(false);
         screen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         screen.setLocationRelativeTo(null);
         screen.setLayout(null);
-        
-        
+    
         //Creacion de manejador de tablero para gamePlay
         tableroGamePlay= new boolean[5][5];
         tableroGamePlay[2][2] = true; //El cuadrado del centro se manejara siempre como true;
         
         
         
-        
-       /*
-        JLabel imageTest = new JLabel("AAA");
-        imageTest.setBounds(1000, 500, 300, 200);
-        screen.add(imageTest);
-        
-         java.net.URL imageUrl = getClass().getResource("/bingoT2.png");
-        if(imageUrl!=null){
-            ImageIcon imageIcon = new ImageIcon(imageUrl);
-            imageTest.setIcon(imageIcon);
-            imageTest.setVisible(true);
-        }else{
-            System.err.println("Error");
-        }
-        */
-       
+    
         
         
         
@@ -125,13 +119,20 @@ public class VisualTablero {
         Tablero = tableroSpawner.obtenerTablero();
         tableroSpawner.Imprimir();
         
-        
+   
         JPanel panel = new JPanel(new GridLayout(5,5));
+        Border buttonBorder = BorderFactory.createLineBorder(Color.yellow,2);
         for(int i=0; i<5; i++){
             for(int j=0; j<5; j++){
                 
                 botonesTablero[i][j] = new JButton();
                 String numtxt = String.valueOf(Tablero[i][j]);
+                //JLabel prueb = new JLabel("num");
+                //botonesTablero[i][j].setIcon(imagen);
+                botonesTablero[i][j].setBackground(Color.gray);
+                botonesTablero[i][j].setBorder(buttonBorder);
+                botonesTablero[i][j].setForeground(Color.WHITE);
+                botonesTablero[i][j].setFont(new Font("Dialog", Font.BOLD, 25));
                 botonesTablero[i][j].setText(numtxt);
                 int fila=i;
                 int columna=j;
@@ -146,9 +147,13 @@ public class VisualTablero {
                         if(tableroGamePlay[fila][columna]==false){
                             tableroGamePlay[fila][columna]=true;
                             botonesTablero[fila][columna].setBackground(Color.YELLOW);
+                            botonesTablero[fila][columna].setForeground(Color.GRAY);
+                            botonesTablero[fila][columna].setBorder(BorderFactory.createLineBorder(Color.gray,2));
                         }else if(tableroGamePlay[fila][columna]==true){
                             tableroGamePlay[fila][columna]=false;
                             botonesTablero[fila][columna].setBackground(Color.gray);
+                            botonesTablero[fila][columna].setForeground(Color.WHITE);
+                            botonesTablero[fila][columna].setBorder(buttonBorder);
                         }
                     }
 
@@ -169,12 +174,16 @@ public class VisualTablero {
         JPanel panelPreview = new JPanel();
         panelPreview.setLayout(null);
         panelPreview.setBounds(1010, 300, 225, 300);
-        panelPreview.setBackground(Color.white);
+        panelPreview.setBackground(Color.gray);
+        Border PanelBorder = BorderFactory.createLineBorder(Color.yellow,5);
+        panelPreview.setBorder(PanelBorder);
         panelPreview.add(tableroshow);
         tableroshow.setBounds(0,0,225, 300);
         
         JLabel gameModetxt = new JLabel("Tablero Objetivo");
-        gameModetxt.setBounds(1010, 235, 225, 90);
+        gameModetxt.setFont(new Font("Dialog", Font.BOLD, 22));
+        gameModetxt.setForeground(Color.white);
+        gameModetxt.setBounds(1015, 235, 240, 90);
         screen.add(gameModetxt);
         
         screen.add(panel);
@@ -183,8 +192,13 @@ public class VisualTablero {
         
         
         //Creacion de numeros ya cantados
+        Border historialBorder = BorderFactory.createLineBorder(Color.darkGray,5);
         for(int j=0; j<5;j++){
             historialBotones[j]= new JButton("");
+            historialBotones[j].setBackground(Color.orange);
+            historialBotones[j].setForeground(Color.GRAY);
+            historialBotones[j].setBorder(historialBorder);
+            historialBotones[j].setFont(new Font("Dialog", Font.BOLD, 25));
             historialBotones[j].setEnabled(false);
             panelCantados.add(historialBotones[j]);
         }
@@ -194,20 +208,34 @@ public class VisualTablero {
         
         //Numero cantado actualmente
         showCantado.setBounds(450, 0, 100, 100);
+        showCantado.setBackground(Color.orange);
+        showCantado.setForeground(Color.GRAY);
+        showCantado.setBorder(historialBorder);
+        showCantado.setFont(new Font("Dialog", Font.BOLD, 25));
         screen.add(showCantado);
         
         //Indicador de modo de Juego
         JLabel indicadorModo = new JLabel("MODO DE JUEGO");
-        indicadorModo.setBounds(350, 235, 225, 90);
+        indicadorModo.setBounds(280, 235, 225, 90);
         //GameSingleton.getInstancia().getGameSettings().getGameMode()
         juegoModetxt = new JLabel("MODO HERE");
-        juegoModetxt.setBounds(350, 280, 225, 90);
+        indicadorModo.setFont(new Font("Dialog", Font.BOLD, 25));
+        indicadorModo.setForeground(Color.white);
+        juegoModetxt.setFont(new Font("Dialog", Font.BOLD, 25));
+        juegoModetxt.setForeground(Color.white);
+        juegoModetxt.setBounds(300, 280, 225, 90);
         screen.add(juegoModetxt);
         screen.add(indicadorModo);
         
         //boton de BINGO
+        Border bingoBorder = BorderFactory.createLineBorder(Color.DARK_GRAY,7);
         JButton bingoBtt= new JButton("BINGO");
-        bingoBtt.setBounds(25, 470, 195, 74);
+        bingoBtt.setBounds(290, 410, 195, 74);
+        bingoBtt.setBackground(Color.RED);
+        bingoBtt.setForeground(Color.white);
+        bingoBtt.setBorder(bingoBorder);
+        //bingoBtt.setBorder(historialBorder);
+        bingoBtt.setFont(new Font("Dialog", Font.BOLD, 30));
         bingoBtt.addActionListener(new ActionListener(){
           @Override 
           public void actionPerformed(ActionEvent e){
@@ -217,8 +245,13 @@ public class VisualTablero {
         screen.add(bingoBtt);
         
         //Boton de salida de partida
-        JButton salirBtt= new JButton("Salir de Partida");
+        Border salirBorder = BorderFactory.createLineBorder(Color.DARK_GRAY,7);
+        JButton salirBtt= new JButton("SALIR DE PARTIDA");
+         salirBtt.setBackground(Color.ORANGE);
+        salirBtt.setForeground(Color.darkGray);
+        salirBtt.setBorder(salirBorder);
         salirBtt.setBounds(25, 670, 195, 74);
+        salirBtt.setFont(new Font("Dialog", Font.BOLD, 15));
         salirBtt.addActionListener(new ActionListener(){
           @Override 
           public void actionPerformed(ActionEvent e){
@@ -229,18 +262,7 @@ public class VisualTablero {
                     
         });
         screen.add(salirBtt);
-        
-        //Testeo solamente
-        JButton randBtt= new JButton("gen rand");
-        randBtt.setBounds(25, 570, 195, 74);
-        randBtt.addActionListener(new ActionListener(){
-          @Override 
-          public void actionPerformed(ActionEvent e){
-              genAndShow();
-          }
-                    
-        });
-        screen.add(randBtt);
+ 
         screen.add(salirBtt);
         
         
@@ -279,40 +301,7 @@ public class VisualTablero {
     public static void main(String[] args) {
         VisualTablero ventana = new VisualTablero(username);
     } 
-    //Testing only
-    public void genAndShow(){
-        boolean repetido;
-        int randNum;
-        do{
-                randNum =spawner.nextInt((75-1)+1)+1;
-                repetido=false;
-                
-            //Revision si ya existe en el array
-            for(int i=0; i<count; i++){
-                if(cantadosYa[i]==randNum){
-                    repetido=true;
-                    break; 
-                }
-            }
-        }while(repetido);
-        showCantado.setText(String.valueOf(randNum));
-        
-        
-        //Agregacion al historial
-        numerosCantados.add(0,randNum);
-        cantadosYa[count]=randNum;
-        if(numerosCantados.size()>MaxHistorial){
-            numerosCantados.remove(numerosCantados.size()-1);
-        }
-        
-        count++;
-        
-        actualizarHistorial();
-        
-        //Nota: a la hora de hacer esto con el server host, se debe recibir tanto el num en forma int como el String. el int se guardara tal y como esta la forma local
-        //Lo que se puede hacer es crear otro arraylist en forma string que sirva la misma logica y trabaje paralelamente con el nums. A manera que, dependiendo el indice del array int, se establece el string
-        
-    }
+  
     
     
     
@@ -379,13 +368,13 @@ public class VisualTablero {
             JOptionPane.showMessageDialog(screen, "HAS GANADO EL BINGO");
             
             
-            //Esto se ha de modificar, pues hay que ver si se saca a todo mundo a la hora de tener un win o que pex
+  
             
             
             
             
         }else{
-            JOptionPane.showConfirmDialog(screen, "AUN NO PAPU");
+            JOptionPane.showMessageDialog(screen, "NO TIENES LO QUE NECESITAS PARA GANAR");
         }
         
         
@@ -460,12 +449,12 @@ public class VisualTablero {
                 if(messageContent.equals("T1")|| messageContent.equals("T2")||messageContent.equals("T3")||messageContent.equals("T4")){
                     selectedTablero=messageContent;
                     tableroSeleccion();
-                    System.out.println("Entro en la revision del tipo de tablero");
+                    
                     return;
                 }else if(messageContent.equals("Lineal")|| messageContent.equals("FullHouse")){
                    gameModeLabel=messageContent;
                     juegoModetxt.setText(gameModeLabel);
-                    System.out.println("Entro a la revision de lineal o fullhouse");
+                   
                     return;
                 }else{
                     int num=0;
