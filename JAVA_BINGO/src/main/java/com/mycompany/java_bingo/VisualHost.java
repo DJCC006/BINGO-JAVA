@@ -89,7 +89,7 @@ public class VisualHost {
         
         
         //Creacion de fondo de pantalla
-        String rutacompleta = "C:\\Users\\David\\Documents\\Documentos UNI\\I Jahre\\IV Period\\Prácticas Programación\\Juego Bingo\\JAVA_BINGO\\src\\main\\java\\resources\\mainBC.jpg";
+        String rutacompleta = "src\\main\\java\\resources\\mainBC.jpg";
         AplicarFondos panelFondo = new AplicarFondos(rutacompleta); 
         panelFondo.setLayout(new BorderLayout());
 

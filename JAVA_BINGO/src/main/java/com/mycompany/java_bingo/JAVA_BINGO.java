@@ -11,7 +11,6 @@ package com.mycompany.java_bingo;
 public class JAVA_BINGO {
 
     public static void main(String[] args) {
-        GeneradorTablero tablero = new GeneradorTablero();
-        tablero.Imprimir();
+        MenuInicial menu = new MenuInicial();
     }
 }

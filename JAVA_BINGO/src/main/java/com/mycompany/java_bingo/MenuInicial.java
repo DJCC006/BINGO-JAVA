@@ -15,7 +15,7 @@ import javax.swing.JLabel;
 
 /**
  *
- * @author David
+ * EL PROGRAMA SE INCIA DESDE AQUI
  */ 
 public class MenuInicial {
     //681, 432
@@ -25,7 +25,7 @@ public class MenuInicial {
         
         
         //Creacion de fondo de pantalla
-        String rutacompleta = "C:\\Users\\David\\Documents\\Documentos UNI\\I Jahre\\IV Period\\Prácticas Programación\\Juego Bingo\\JAVA_BINGO\\src\\main\\java\\resources\\firstMENU.png";
+        String rutacompleta = "src\\main\\java\\resources\\firstMENU.png";
         AplicarFondos panelFondo = new AplicarFondos(rutacompleta); 
         panelFondo.setLayout(new BorderLayout());
         

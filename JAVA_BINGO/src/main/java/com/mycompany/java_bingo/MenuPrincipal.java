@@ -21,7 +21,7 @@ public class MenuPrincipal {
     public MenuPrincipal(){
         
         
-        String rutacompleta = "C:\\Users\\David\\Documents\\Documentos UNI\\I Jahre\\IV Period\\Prácticas Programación\\Juego Bingo\\JAVA_BINGO\\src\\main\\java\\resources\\firstMENU.png";
+        String rutacompleta = "src\\main\\java\\resources\\firstMENU.png";
         AplicarFondos panelFondo = new AplicarFondos(rutacompleta); 
         panelFondo.setLayout(new BorderLayout());
         
